@@ -1,0 +1,56 @@
+<?xml version="1.0" ?>
+<sdf version="1.8">
+  <world name="dynamic_obstacle_world">
+    
+    <!-- 1. Physics: The rules of the world -->
+    <physics name="1ms" type="ignored">
+      <max_step_size>0.001</max_step_size>
+      <real_time_factor>1.0</real_time_factor>
+    </physics>
+
+    <!-- 2. Plugins: The 'Brain' of the simulation -->
+    <plugin filename="gz-sim-physics-system" name="gz::sim::systems::Physics" />
+    <plugin filename="gz-sim-user-commands-system" name="gz::sim::systems::UserCommands" />
+    <plugin filename="gz-sim-scene-broadcaster-system" name="gz::sim::systems::SceneBroadcaster" />
+    <plugin filename="gz-sim-sensors-system" name="gz::sim::systems::Sensors">
+      <render_engine>ogre2</render_engine>
+    </plugin>
+
+    <!-- 3. Environment: Light and Ground -->
+    <include>
+      <uri>https://fuel.gazebosim.org/1.0/OpenRobotics/models/Sun</uri>
+    </include>
+    <include>
+      <uri>https://fuel.gazebosim.org/1.0/OpenRobotics/models/Ground Plane</uri>
+    </include>
+
+    <!-- 4. The Dynamic Actor: The Moving Human -->
+    <actor name="human_actor">
+      <!-- The look of the human -->
+      <skin>
+        <filename>https://fuel.gazebosim.org/1.0/Mingfei/models/actor/tip/files/meshes/walk.dae</filename>
+        <scale>1.0</scale>
+      </skin>
+      
+      <!-- The walking animation loop -->
+      <animation name="walk">
+        <filename>https://fuel.gazebosim.org/1.0/Mingfei/models/actor/tip/files/meshes/walk.dae</filename>
+        <interpolate_x>true</interpolate_x>
+      </animation>
+
+      <!-- The Script: Where the human walks -->
+      <script>
+        <loop>true</loop>
+        <delay_start>0.0</delay_start>
+        <auto_start>true</auto_start>
+        <trajectory id="0" type="walk">
+          <!-- Start at (3,0), Walk to (3,5), then Walk back to (3,0) -->
+          <waypoint><time>0</time><pose>3 0 0 0 0 0</pose></waypoint>
+          <waypoint><time>5</time><pose>3 5 0 0 0 0</pose></waypoint>
+          <waypoint><time>10</time><pose>3 0 0 0 0 0</pose></waypoint>
+        </trajectory>
+      </script>
+    </actor>
+
+  </world>
+</sdf>

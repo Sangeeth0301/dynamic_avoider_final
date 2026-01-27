@@ -1,0 +1,101 @@
+<?xml version="1.0" ?>
+<sdf version="1.8">
+  <world name="super_dynamic_world">
+    <physics name="1ms" type="ignored">
+      <max_step_size>0.001</max_step_size>
+      <real_time_factor>1.0</real_time_factor>
+    </physics>
+
+    <!-- Plugins -->
+    <plugin filename="gz-sim-physics-system" name="gz::sim::systems::Physics" />
+    <plugin filename="gz-sim-user-commands-system" name="gz::sim::systems::UserCommands" />
+    <plugin filename="gz-sim-scene-broadcaster-system" name="gz::sim::systems::SceneBroadcaster" />
+    <plugin filename="gz-sim-sensors-system" name="gz::sim::systems::Sensors"><render_engine>ogre2</render_engine></plugin>
+
+    <!-- Daylight Lighting -->
+    <light type="directional" name="sun">
+      <cast_shadows>true</cast_shadows>
+      <pose>0 0 10 0 0 0</pose>
+      <diffuse>1 1 1 1</diffuse>
+      <specular>0.5 0.5 0.5 1</specular>
+      <direction>-0.5 0.1 -0.9</direction>
+    </light>
+
+    <include><uri>https://fuel.gazebosim.org/1.0/OpenRobotics/models/Ground Plane</uri></include>
+
+    <!-- THE WALLS (Enclosure) -->
+    <model name="office_walls">
+      <static>true</static>
+      <link name="link">
+        <!-- Outer Perimeter -->
+        <collision name="wall1"><geometry><box><size>10 0.2 2.0</size></box></geometry><pose>0 5 1 0 0 0</pose></collision>
+        <visual name="wall1_v"><geometry><box><size>10 0.2 2.0</size></box></geometry><pose>0 5 1 0 0 0</pose><material><ambient>0.7 0.7 0.7 1</ambient><diffuse>0.7 0.7 0.7 1</diffuse></material></visual>
+        
+        <collision name="wall2"><geometry><box><size>10 0.2 2.0</size></box></geometry><pose>0 -5 1 0 0 0</pose></collision>
+        <visual name="wall2_v"><geometry><box><size>10 0.2 2.0</size></box></geometry><pose>0 -5 1 0 0 0</pose><material><ambient>0.7 0.7 0.7 1</ambient><diffuse>0.7 0.7 0.7 1</diffuse></material></visual>
+
+        <collision name="wall3"><geometry><box><size>0.2 10 2.0</size></box></geometry><pose>5 0 1 0 0 0</pose></collision>
+        <visual name="wall3_v"><geometry><box><size>0.2 10 2.0</size></box></geometry><pose>5 0 1 0 0 0</pose><material><ambient>0.7 0.7 0.7 1</ambient><diffuse>0.7 0.7 0.7 1</diffuse></material></visual>
+
+        <collision name="wall4"><geometry><box><size>0.2 10 2.0</size></box></geometry><pose>-5 0 1 0 0 0</pose></collision>
+        <visual name="wall4_v"><geometry><box><size>0.2 10 2.0</size></box></geometry><pose>-5 0 1 0 0 0</pose><material><ambient>0.7 0.7 0.7 1</ambient><diffuse>0.7 0.7 0.7 1</diffuse></material></visual>
+
+        <!-- Interior Divider -->
+        <collision name="divider"><geometry><box><size>4 0.2 2.0</size></box></geometry><pose>0 0 1 0 0 0</pose></collision>
+        <visual name="divider_v"><geometry><box><size>4 0.2 2.0</size></box></geometry><pose>0 0 1 0 0 0</pose><material><ambient>0.5 0.2 0.2 1</ambient><diffuse>0.5 0.2 0.2 1</diffuse></material></visual>
+      </link>
+    </model>
+
+    <!-- 5 ROAMING HUMANS -->
+    <!-- Human 1: Horizontal roaming -->
+    <actor name="human_1">
+      <skin><filename>https://fuel.gazebosim.org/1.0/Mingfei/models/actor/tip/files/meshes/walk.dae</filename></skin>
+      <script><loop>true</loop><auto_start>true</auto_start>
+        <trajectory id="0" type="walk">
+          <waypoint><time>0</time><pose>-4 2 0 0 0 0</pose></waypoint>
+          <waypoint><time>5</time><pose>4 2 0 0 0 0</pose></waypoint>
+          <waypoint><time>10</time><pose>-4 2 0 0 0 3.14</pose></waypoint>
+        </trajectory>
+      </script>
+    </actor>
+
+    <!-- Human 2: Vertical roaming -->
+    <actor name="human_2">
+      <skin><filename>https://fuel.gazebosim.org/1.0/Mingfei/models/actor/tip/files/meshes/walk.dae</filename></skin>
+      <script><loop>true</loop><auto_start>true</auto_start>
+        <trajectory id="0" type="walk">
+          <waypoint><time>0</time><pose>2 -4 0 0 0 1.57</pose></waypoint>
+          <waypoint><time>5</time><pose>2 4 0 0 0 1.57</pose></waypoint>
+          <waypoint><time>10</time><pose>2 -4 0 0 0 -1.57</pose></waypoint>
+        </trajectory>
+      </script>
+    </actor>
+
+    <!-- Human 3: Diagonal crossing -->
+    <actor name="human_3">
+      <skin><filename>https://fuel.gazebosim.org/1.0/Mingfei/models/actor/tip/files/meshes/walk.dae</filename></skin>
+      <script><loop>true</loop><auto_start>true</auto_start>
+        <trajectory id="0" type="walk">
+          <waypoint><time>0</time><pose>-3 -3 0 0 0 0.78</pose></waypoint>
+          <waypoint><time>7</time><pose>3 3 0 0 0 0.78</pose></waypoint>
+          <waypoint><time>14</time><pose>-3 -3 0 0 0 -2.35</pose></waypoint>
+        </trajectory>
+      </script>
+    </actor>
+
+    <!-- Human 4: Circular/Square path -->
+    <actor name="human_4">
+      <skin><filename>https://fuel.gazebosim.org/1.0/Mingfei/models/actor/tip/files/meshes/walk.dae</filename></skin>
+      <script><loop>true</loop><auto_start>true</auto_start>
+        <trajectory id="0" type="walk">
+          <waypoint><time>0</time><pose>-4 -4 0 0 0 0</pose></waypoint>
+          <waypoint><time>4</time><pose>0 -4 0 0 0 0</pose></waypoint>
+          <waypoint><time>8</time><pose>0 0 0 0 0 1.57</pose></waypoint>
+          <waypoint><time>12</time><pose>-4 0 0 0 0 3.14</pose></waypoint>
+          <waypoint><time>16</time><pose>-4 -4 0 0 0 -1.57</pose></waypoint>
+        </trajectory>
+      </script>
+    </actor>
+
+  </world>
+</sdf>
