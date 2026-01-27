@@ -1,37 +1,22 @@
-# 1. LiDAR Data
-# Translates the long Gazebo sensor path to the short ROS "/scan" topic
-- topic_name: "/world/dynamic_obstacle_world/model/turtlebot3_waffle_pi/link/base_scan/sensor/laser_scan/scan"
+- gz_topic_name: "/world/super_dynamic_world/model/super_car/model/SUV/link/link/sensor/lidar/scan"
+  ros_topic_name: "/scan"
   ros_type_name: "sensor_msgs/msg/LaserScan"
   gz_type_name: "gz.msgs.LaserScan"
   direction: GZ_TO_ROS
-  ros_topic_name: "/scan"
 
-# 2. Odometry
-# Tells ROS where the robot is located in the world
-- topic_name: "/model/turtlebot3_waffle_pi/odometry"
-  ros_type_name: "nav_msgs/msg/Odometry"
-  gz_type_name: "gz.msgs.Odometry"
-  direction: GZ_TO_ROS
-  ros_topic_name: "/odom"
-
-# 3. Velocity Commands
-# Translates movement commands from your keyboard/Nav2 to Gazebo motors
-- topic_name: "/cmd_vel"
+- gz_topic_name: "/model/super_car/model/SUV/cmd_vel"
+  ros_topic_name: "/cmd_vel"
   ros_type_name: "geometry_msgs/msg/Twist"
   gz_type_name: "gz.msgs.Twist"
   direction: ROS_TO_GZ
 
-# 4. Simulation Clock
-# Synchronizes ROS time with Gazebo time so sensors don't lag
+- gz_topic_name: "/model/super_car/model/SUV/odometry"
+  ros_topic_name: "/odom"
+  ros_type_name: "nav_msgs/msg/Odometry"
+  gz_type_name: "gz.msgs.Odometry"
+  direction: GZ_TO_ROS
+
 - topic_name: "/clock"
   ros_type_name: "rosgraph_msgs/msg/Clock"
   gz_type_name: "gz.msgs.Clock"
   direction: GZ_TO_ROS
-
-# 5. Transforms (TF)
-# Explains the mathematical relationship between robot parts
-- topic_name: "/model/turtlebot3_waffle_pi/tf"
-  ros_type_name: "tf2_msgs/msg/TFMessage"
-  gz_type_name: "gz.msgs.Pose_V"
-  direction: GZ_TO_ROS
-  ros_topic_name: "/tf"
