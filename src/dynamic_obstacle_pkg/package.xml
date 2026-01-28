@@ -6,6 +6,7 @@
   <description>Dynamic Obstacle Avoidance for Jazzy</description>
   <maintainer email="user@todo.todo">user</maintainer>
   <license>Apache-2.0</license>
+  <buildtool_depend>ament_cmake</buildtool_depend>
 
   <depend>rclpy</depend>
   <depend>ros_gz_sim</depend>
@@ -13,6 +14,6 @@
   <depend>turtlebot3_gazebo</depend>
 
   <export>
-    <build_type>ament_python</build_type>
+    <build_type>ament_cmake</build_type>
   </export>
 </package>
