@@ -5,11 +5,21 @@ amcl:
 bt_navigator:
   ros__parameters:
     use_sim_time: True
+    global_frame: odom
+    robot_base_frame: base_link
+    odom_topic: odom
+    bt_loop_duration: 10
+    default_server_timeout: 20
+    default_bt_xml_filename: "navigate_to_pose_w_replanning_and_recovery.xml"
 
 controller_server:
   ros__parameters:
     use_sim_time: True
     controller_frequency: 20.0
+    min_x_velocity_threshold: 0.001
+    min_y_velocity_threshold: 0.5
+    min_theta_velocity_threshold: 0.001
+    failure_tolerance: 0.3
     progress_checker_plugin: "progress_checker"
     goal_checker_plugins: ["general_goal_checker"]
     controller_plugins: ["FollowPath"]
@@ -19,82 +29,143 @@ controller_server:
       required_movement_radius: 0.5
       movement_time_allowance: 10.0
 
-    # FIXED: Added the missing plugin definition here
     general_goal_checker:
       stateful: True
       plugin: "nav2_controller::SimpleGoalChecker"
       xy_goal_tolerance: 0.25
       yaw_goal_tolerance: 0.25
 
-    # THE "SUPER CAR" MPPI CONTROLLER
-    # THE "SUPER CAR" MPPI CONTROLLER
     FollowPath:
       plugin: "nav2_mppi_controller::MPPIController"
-      time_steps: 56
+      time_steps: 60
       model_dt: 0.05
-      batch_size: 2000
-      vx_max: 1.0       
-      vx_min: -0.35
-      ax_max: 3.0       
-      # CHANGE ObstacleCritic to ObstaclesCritic below (Add the 's')
-      critics: ["ConstraintCritic", "ObstaclesCritic", "GoalCritic", "PathAlignCritic"]
-      
-      ObstaclesCritic: # Added 's' here too
-        low_cost_distance: 0.2
-        cost_weight: 15.0
+      batch_size: 3000
+      vx_max: 3.5
+      vx_min: -0.5
+      ax_max: 5.0
+      ax_min: -5.0
+      wz_max: 0.8
+      critics: ["ConstraintCritic", "ObstaclesCritic", "GoalCritic", "PathAlignCritic", "PathAngleCritic"]
+      ConstraintCritic:
+        cost_weight: 5.0
+      ObstaclesCritic:
+        cost_weight: 35.0
+        consider_footprint: true
+        collision_cost: 100000.0
+        near_goal_distance: 0.8
+      GoalCritic:
+        cost_weight: 5.0
+        threshold_to_consider: 0.5
+      PathAlignCritic:
+        cost_weight: 12.0
+        offset_from_endpoint: 3
+      PathAngleCritic:
+        cost_weight: 8.0
+        offset_from_endpoint: 3
 
 local_costmap:
   local_costmap:
     ros__parameters:
-      update_frequency: 5.0
+      update_frequency: 10.0
+      publish_frequency: 5.0
+      global_frame: odom
+      robot_base_frame: base_link
+      use_sim_time: True
+      rolling_window: true
+      width: 8
+      height: 8
+      resolution: 0.05
+      footprint: "[[2.25, 1.0], [2.25, -1.0], [-2.25, -1.0], [-2.25, 1.0]]"
+      plugins: ["obstacle_layer", "inflation_layer"]
+      obstacle_layer:
+        plugin: "nav2_costmap_2d::ObstacleLayer"
+        enabled: True
+        observation_sources: scan
+        scan:
+          topic: /scan
+          max_obstacle_height: 2.0
+          clearing: True
+          marking: True
+          data_type: "LaserScan"
+          raytrace_max_range: 5.0
+          obstacle_max_range: 4.5
+      inflation_layer:
+        plugin: "nav2_costmap_2d::InflationLayer"
+        cost_scaling_factor: 3.0
+        inflation_radius: 1.5
+
+global_costmap:
+  global_costmap:
+    ros__parameters:
+      update_frequency: 1.0
       publish_frequency: 2.0
       global_frame: odom
       robot_base_frame: base_link
       use_sim_time: True
       rolling_window: true
-      width: 5
-      height: 5
-      resolution: 0.05
+      width: 40
+      height: 40
+      resolution: 0.1
+      footprint: "[[2.25, 1.0], [2.25, -1.0], [-2.25, -1.0], [-2.25, 1.0]]"
       plugins: ["obstacle_layer", "inflation_layer"]
       obstacle_layer:
         plugin: "nav2_costmap_2d::ObstacleLayer"
         observation_sources: scan
         scan:
           topic: /scan
+          max_obstacle_height: 2.0
           clearing: True
           marking: True
           data_type: "LaserScan"
+          raytrace_max_range: 20.0
+          obstacle_max_range: 15.0
       inflation_layer:
         plugin: "nav2_costmap_2d::InflationLayer"
-        inflation_radius: 0.6
+        cost_scaling_factor: 3.0
+        inflation_radius: 1.5
 
 planner_server:
   ros__parameters:
+    expected_planner_frequency: 5.0
     use_sim_time: True
     planner_plugins: ["GridBased"]
     GridBased:
-      plugin: "nav2_navfn_planner/NavfnPlanner"
+      plugin: "nav2_navfn_planner::NavfnPlanner"
+      tolerance: 0.5
+      use_astar: false
+      allow_unknown: true
 
-global_costmap:
-  global_costmap:
-    ros__parameters:
-      update_frequency: 1.0
-      publish_frequency: 1.0
-      global_frame: map
-      robot_base_frame: base_link
-      use_sim_time: True
-      plugins: ["static_layer", "obstacle_layer", "inflation_layer"]
-      static_layer:
-        plugin: "nav2_costmap_2d::StaticLayer"
-        map_subscribe_transient_local: True
-      obstacle_layer:
-        plugin: "nav2_costmap_2d::ObstacleLayer"
-        observation_sources: scan
-        scan:
-          topic: /scan
-          clearing: True
-          marking: True
-          data_type: "LaserScan"
-      inflation_layer:
-        plugin: "nav2_costmap_2d::InflationLayer"
-        inflation_radius: 0.6
+behavior_server:
+  ros__parameters:
+    costmap_topic: local_costmap/costmap_raw
+    footprint_topic: local_costmap/published_footprint
+    cycle_frequency: 10.0
+    behavior_plugins: ["spin", "backup", "drive_on_heading", "wait"]
+    spin:
+      plugin: "nav2_behaviors::Spin"
+    backup:
+      plugin: "nav2_behaviors::BackUp"
+    drive_on_heading:
+      plugin: "nav2_behaviors::DriveOnHeading"
+    wait:
+      plugin: "nav2_behaviors::Wait"
+    global_frame: odom
+    robot_base_frame: base_link
+    transform_timeout: 0.1
+    use_sim_time: true
+    simulate_ahead_time: 2.0
+
+robot_state_publisher:
+  ros__parameters:
+    use_sim_time: True
+
+waypoint_follower:
+  ros__parameters:
+    use_sim_time: True
+    loop_rate: 20
+    stop_on_failure: False
+    waypoint_task_executor_plugin: "wait_at_waypoint"
+    wait_at_waypoint:
+      plugin: "nav2_waypoint_follower::WaitAtWaypoint"
+      enabled: True
+      waypoint_pause_duration: 0

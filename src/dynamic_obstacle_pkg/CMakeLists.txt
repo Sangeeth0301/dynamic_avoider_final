@@ -7,7 +7,7 @@ endif()
 
 # Find dependencies
 find_package(ament_cmake REQUIRED)
-find_package(rclpy REQUIRED)
+# rclpy is handled by the launch system, no C++ find needed.
 
 # Install launch files
 install(DIRECTORY launch
@@ -21,6 +21,11 @@ install(DIRECTORY config
 
 # Install Gazebo world files
 install(DIRECTORY worlds
+  DESTINATION share/${PROJECT_NAME}
+)
+
+# Install resource directory (URDF, etc.)
+install(DIRECTORY resource
   DESTINATION share/${PROJECT_NAME}
 )
 
