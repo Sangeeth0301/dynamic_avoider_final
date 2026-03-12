@@ -1,36 +1,41 @@
-# Dynamic Obstacle Avoider - Project 36
+# 🏁 SUV Masterpiece: Dynamic Obstacle Avoider
 
-Navigate from A to B while avoiding moving actors (simulated humans) in Gazebo.
+A state-of-the-art autonomous vehicle simulation featuring **Ackermann Steering**, **MPPI Navigation**, and a **6-Human Central Crowd** in Gazebo Harmonic.
 
-## 🚀 Commands to Run
+## 🛠️ Technical Stack & Gap Analysis
+This project represents a generational leap over standard ROS 2 tutorials:
 
-Open three separate terminals in the project root (`c:\Users\sande\ROS_2\dynamic_avoider_final`):
+| Feature | SUV Masterpiece (Our Project) | Reference Standards (Classic) |
+| :--- | :--- | :--- |
+| **Engine** | **Gazebo Harmonic (Sim)** | Gazebo Classic (Legacy) |
+| **ROS Distro** | **ROS 2 Jazzy** (Latest LTS) | ROS 2 Foxy/Humble |
+| **Drive Type** | **Ackermann Steering** (Car-like) | Differential Drive (Toy-like) |
+| **Physics** | **1ms Precision** | 10ms (Default) |
+| **Controller** | **MPPI** (Model Predictive Path Integral) | DWB (Dynamic Window Approach) |
 
-### Terminal 1: Build and Simulation
-```powershell
-# Build the workspace
-colcon build --symlink-install
+## 🚀 One-Command Launch
+We have simplified the execution into a single "Master Key" launch file:
 
-# Source and Launch Gazebo + Rviz
-call install/setup.bat
-ros2 launch dynamic_obstacle_pkg sim_launch.launch.py
+```bash
+# 1. Build the workspace
+colcon build --packages-select dynamic_obstacle_pkg
+
+# 2. Source and Launch Total System
+source install/setup.bash
+ros2 launch dynamic_obstacle_pkg total_system.launch.py
 ```
 
-### Terminal 2: Navigation Stack
-```powershell
-# Source and Launch SLAM + Nav2
-call install/setup.bat
-ros2 launch dynamic_obstacle_pkg nav_launch.launch.py
-```
+## 🎯 Interactive Controls
+Once the simulation is initialized, you can control the SUV directly through the **C++ Master Goal Controller** in your terminal:
+- **Input**: Enter `X Y Yaw` coordinates (e.g., `10.0 5.0 0.0`).
+- **Feedback**: Monitor goal status, path planning, and arrival notifications in real-time.
 
-### Terminal 3: Git (Optional)
-```powershell
-# To push changes to your repository
-git push origin main
-```
+## 📦 Project Architecture
+- **worlds/dynamic_world.sdf**: Cinematic environment with 6 dynamic actors and optimized physics.
+- **master_goal_node.cpp**: High-performance C++ interactive goal server.
+- **urdf/super_car.urdf**: Physical robot description for RViz and Gazebo.
+- **config/nav2_default_view.rviz**: Professional high-fidelity visualization.
+- **config/nav2_params.yaml**: Tuned MPPI parameters for car-like dynamics.
 
-## 🛠️ Project Components
-- **Gazebo Sim**: 30x30m Arena with 4 central pillars and 6 dynamic actors.
-- **Robot**: Ackermann-steered Super Car with LiDAR.
-- **Nav2**: Using MPPI Controller for advanced dynamic obstacle avoidance.
-- **SLAM**: Real-time mapping using SLAM Toolbox.
+---
+*Elevating Autonomous Simulation to the "Best Possible" State.*

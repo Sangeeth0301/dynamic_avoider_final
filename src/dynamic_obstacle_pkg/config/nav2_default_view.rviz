@@ -5,26 +5,32 @@ Panels:
     Property Tree Widget:
       Expanded:
         - /Global Options1
-        - /Status1
         - /RobotModel1
         - /LaserScan1
+        - /SLAM Map1
+        - /Costmaps1
+        - /Costmaps1/Local Costmap1
+        - /Costmaps1/Global Costmap1
+        - /Navigation1
+        - /Navigation1/Global Plan1
+        - /Navigation1/Local Plan1
+        - /Navigation1/Footprint1
+        - /Goal Pose1
+        - /Odometry1
         - /TF1
-        - /Local Costmap1
-        - /Global Costmap1
-        - /Footprint1
-        - /Global Plan1
-        - /Local Plan1
       Splitter Ratio: 0.5
-    Tree Height: 549
+    Tree Height: 600
   - Class: rviz_common/Views
     Expanded:
       - /Current View1
     Name: Views
     Splitter Ratio: 0.5
+
 Visualization Manager:
   Class: ""
   Displays:
-    - Alpha: 0.3
+
+    - Alpha: 0.5
       Cell Size: 1
       Class: rviz_default_plugins/Grid
       Color: 160; 160; 164
@@ -32,90 +38,228 @@ Visualization Manager:
       Name: Grid
       Reference Frame: <Fixed Frame>
       Value: true
+
     - Class: rviz_default_plugins/RobotModel
+      Alpha: 1.0
       Description Source: Topic
       Description Topic:
+        Depth: 5
+        Durability Policy: Transient Local
+        History Policy: Keep Last
+        Reliability Policy: Reliable
         Value: /robot_description
       Enabled: true
       Name: RobotModel
+      TF Prefix: ""
+      Update Interval: 0
+      Value: true
       Visual Enabled: true
-      Alpha: 0.6
+      Collision Enabled: false
+
     - Alpha: 1
+      Autocompute Intensity Bounds: true
+      Autocompute Value Bounds:
+        Max Value: 10
+        Min Value: -10
+        Value: true
       Class: rviz_default_plugins/LaserScan
-      Color: 0; 255; 0
-      Color Transformer: AxisColor
-      Axis: Z
+      Color: 255; 0; 0
+      Color Transformer: FlatColor
+      Decay Time: 0
       Enabled: true
       Name: LaserScan
+      Queue Size: 10
+      Selectable: true
+      Size (Pixels): 3
       Size (m): 0.05
+      Style: Points
       Topic:
         Depth: 5
         Durability Policy: Volatile
         History Policy: Keep Last
         Reliability Policy: Best Effort
         Value: /scan
+      Use Fixed Frame: true
       Value: true
-    - Class: rviz_default_plugins/TF
-      Enabled: true
-      Name: TF
-      Value: true
-      Show Arrows: true
-      Show Axes: true
-      Show Names: false
-      Marker Scale: 0.5
+
     - Alpha: 0.7
       Class: rviz_default_plugins/Map
+      Color Scheme: map
+      Draw Behind: false
       Enabled: true
-      Name: Local Costmap
+      Name: SLAM Map
       Topic:
-        Value: /local_costmap/costmap_raw
+        Depth: 5
+        Durability Policy: Transient Local
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /map
       Value: true
-      Color Scheme: costmap
-    - Alpha: 0.5
-      Class: rviz_default_plugins/Map
+
+    - Class: rviz_default_plugins/Group
       Enabled: true
-      Name: Global Costmap
-      Topic:
-        Value: /global_costmap/costmap_raw
-      Value: true
-      Color Scheme: costmap
-    - Class: rviz_default_plugins/Polygon
+      Name: Costmaps
+      Displays:
+
+        - Alpha: 0.6
+          Class: rviz_default_plugins/Map
+          Color Scheme: costmap
+          Draw Behind: false
+          Enabled: true
+          Name: Local Costmap
+          Topic:
+            Depth: 5
+            Durability Policy: Volatile
+            History Policy: Keep Last
+            Reliability Policy: Reliable
+            Value: /local_costmap/costmap
+          Value: true
+
+        - Alpha: 0.4
+          Class: rviz_default_plugins/Map
+          Color Scheme: costmap
+          Draw Behind: false
+          Enabled: true
+          Name: Global Costmap
+          Topic:
+            Depth: 5
+            Durability Policy: Volatile
+            History Policy: Keep Last
+            Reliability Policy: Reliable
+            Value: /global_costmap/costmap
+          Value: true
+
+    - Class: rviz_default_plugins/Group
       Enabled: true
-      Name: Footprint
-      Topic:
-        Value: /local_costmap/published_footprint
-      Color: 255; 0; 0
-      Value: true
-    - Class: rviz_default_plugins/Path
+      Name: Navigation
+      Displays:
+
+        - Class: rviz_default_plugins/Path
+          Alpha: 1.0
+          Buffer Length: 1
+          Color: 0; 220; 0
+          Enabled: true
+          Line Style: Lines
+          Line Width: 0.05
+          Name: Global Plan
+          Offset:
+            X: 0
+            Y: 0
+            Z: 0.05
+          Pose Style: None
+          Topic:
+            Depth: 5
+            Durability Policy: Volatile
+            History Policy: Keep Last
+            Reliability Policy: Reliable
+            Value: /plan
+          Value: true
+
+        - Class: rviz_default_plugins/Path
+          Alpha: 1.0
+          Buffer Length: 1
+          Color: 0; 120; 255
+          Enabled: true
+          Line Style: Lines
+          Line Width: 0.08
+          Name: Local Plan
+          Offset:
+            X: 0
+            Y: 0
+            Z: 0.1
+          Pose Style: None
+          Topic:
+            Depth: 5
+            Durability Policy: Volatile
+            History Policy: Keep Last
+            Reliability Policy: Reliable
+            Value: /local_plan
+          Value: true
+
+        - Class: rviz_default_plugins/Polygon
+          Color: 255; 255; 0
+          Enabled: true
+          Name: Footprint
+          Topic:
+            Depth: 5
+            Durability Policy: Volatile
+            History Policy: Keep Last
+            Reliability Policy: Reliable
+            Value: /local_costmap/published_footprint
+          Value: true
+
+        - Class: rviz_default_plugins/MarkerArray
+          Enabled: true
+          Name: MPPI Trajectories
+          Namespaces: {}
+          Topic:
+            Depth: 5
+            Durability Policy: Volatile
+            History Policy: Keep Last
+            Reliability Policy: Reliable
+            Value: /trajectories
+          Value: true
+
+    - Class: rviz_default_plugins/Pose
+      Alpha: 1
+      Axes Length: 1
+      Axes Radius: 0.1
+      Color: 255; 25; 0
       Enabled: true
-      Name: Global Plan
+      Head Length: 0.3
+      Head Radius: 0.1
+      Name: Goal Pose
+      Shaft Length: 1.0
+      Shaft Radius: 0.05
+      Shape: Arrow
       Topic:
-        Value: /plan
-      Color: 0; 255; 255
-      Line Style: Lines
-      Line Width: 0.1
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /goal_pose
       Value: true
-    - Class: rviz_default_plugins/Path
+
+    - Class: rviz_default_plugins/Odometry
+      Alpha: 1
+      Angle Tolerance: 0.1
+      Axes Length: 0.5
+      Axes Radius: 0.05
+      Color: 204; 51; 204
+      Color Style: Unique
       Enabled: true
-      Name: Local Plan
+      Keep: 1
+      Name: Odometry
+      Position Tolerance: 0.1
+      Shape: Arrow
       Topic:
-        Value: /local_plan
-      Color: 255; 0; 0
-      Line Style: Lines
-      Line Width: 0.15
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Best Effort
+        Value: /odom
       Value: true
-    - Class: rviz_default_plugins/MarkerArray
-      Enabled: true
-      Name: MPPI Trajectories
-      Topic:
-        Value: /trajectories
-      Value: true
+
+    - Class: rviz_default_plugins/TF
+      Enabled: false
+      Frame Timeout: 15
+      Frames:
+        All Enabled: true
+      Marker Scale: 0.5
+      Name: TF
+      Show Arrows: true
+      Show Axes: true
+      Show Names: true
+      Update Interval: 0
+      Value: false
+
   Enabled: true
   Global Options:
-    Background Color: 48; 48; 48
-    Fixed Frame: odom
+    Background Color: 25; 25; 25
+    Fixed Frame: map
     Frame Rate: 30
   Name: root
+
   Tools:
     - Class: rviz_default_plugins/Interact
       Hide Inactive Objects: true
@@ -123,21 +267,40 @@ Visualization Manager:
     - Class: rviz_default_plugins/Select
     - Class: rviz_default_plugins/FocusCamera
     - Class: rviz_default_plugins/Measure
+      Line color: 128; 128; 0
     - Class: rviz_default_plugins/SetGoal
       Topic: /goal_pose
+
   Views:
     Current:
       Class: rviz_default_plugins/Orbit
       Distance: 20.0
+      Enable Stereo Rendering:
+        Stereo Eye Separation: 0.06
+        Stereo Focal Distance: 1
+        Swap Stereo Eyes: false
+        Value: false
+      Focal Point:
+        X: 0
+        Y: 0
+        Z: 0
+      Focal Shape Fixed Size: true
+      Focal Shape Size: 0.05
+      Invert Z Axis: false
       Name: Current View
-      Pitch: 0.8
+      Near Clip Distance: 0.01
+      Pitch: 0.6
       Target Frame: base_link
-      Yaw: 0.82
+      Value: rviz_default_plugins/Orbit
+      Yaw: 1.57
     Saved: ~
+
 Window Geometry:
   Displays:
     collapsed: false
   Height: 846
+  Hide Left Dock: false
+  Hide Right Dock: false
   Views:
     collapsed: false
   Width: 1200

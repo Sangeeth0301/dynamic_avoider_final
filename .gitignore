@@ -3,10 +3,35 @@ build/
 install/
 log/
 
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
 # Python junk
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.tox/
+.venv/
+venv/
 
-# Hidden system files
+# Gazebo / Simulation junk
+*.log
+*.pcap
+model.config
+*.sdf-back
+
+# System files
 .DS_Store
+Thumbs.db
 
+# Gemini/Antigravity junk
+.gemini/
+.agents/
+.agent/
+_agents/
+_agent/

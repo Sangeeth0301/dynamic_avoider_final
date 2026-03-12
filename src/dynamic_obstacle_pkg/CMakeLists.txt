@@ -7,31 +7,37 @@ endif()
 
 # Find dependencies
 find_package(ament_cmake REQUIRED)
-# rclpy is handled by the launch system, no C++ find needed.
+find_package(rclcpp REQUIRED)
+find_package(rclcpp_action REQUIRED)
+find_package(nav2_msgs REQUIRED)
+find_package(tf2 REQUIRED)
+find_package(tf2_geometry_msgs REQUIRED)
+find_package(geometry_msgs REQUIRED)
 
-# Install launch files
-install(DIRECTORY launch
+# Build C++ Goal Node
+add_executable(master_goal_node master_goal_node.cpp)
+ament_target_dependencies(master_goal_node
+  rclcpp
+  rclcpp_action
+  nav2_msgs
+  tf2
+  tf2_geometry_msgs
+  geometry_msgs
+)
+
+# Install directories
+install(DIRECTORY
+  config
+  launch
+  urdf
+  worlds
   DESTINATION share/${PROJECT_NAME}
 )
 
-# Install config files (Nav2 and Bridge params)
-install(DIRECTORY config
-  DESTINATION share/${PROJECT_NAME}
-)
-
-# Install Gazebo world files
-install(DIRECTORY worlds
-  DESTINATION share/${PROJECT_NAME}
-)
-
-# Install resource directory (URDF, etc.)
-install(DIRECTORY resource
-  DESTINATION share/${PROJECT_NAME}
-)
-
-# Install resource marker for the ROS 2 index
-install(FILES resource/${PROJECT_NAME}
-  DESTINATION share/ament_index/resource_index/packages
+# Install executables
+install(TARGETS
+  master_goal_node
+  DESTINATION lib/${PROJECT_NAME}
 )
 
 # Install package.xml

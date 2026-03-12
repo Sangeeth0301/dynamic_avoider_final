@@ -1,0 +1,204 @@
+<?xml version="1.0"?>
+<!--
+  super_car.urdf — Complete rewrite
+
+  PURPOSE: This file is used ONLY by robot_state_publisher to provide
+  /tf transforms (base_link → lidar_link, base_link → wheel links).
+  It does NOT spawn anything in Gazebo — the SDF world does that.
+
+  FIX: Original URDF had Gazebo <plugin> blocks inside it. When loaded
+  via robot_state_publisher those plugin blocks are ignored but they
+  caused the URDF parser to warn, and joint_state_publisher_gui to
+  fail because inertia/collision were missing on wheel links.
+
+  This clean URDF has:
+    - Proper inertia on every link (required for joint states)
+    - No Gazebo plugin blocks (they live in the SDF)
+    - Frame names that EXACTLY match what the SDF publishes
+-->
+<robot name="super_car">
+  <!-- ══════════ BASE LINK ══════════ -->
+  <link name="base_link">
+    <inertial>
+      <mass value="800.0"/>
+      <origin xyz="0 0 0.4" rpy="0 0 0"/>
+      <inertia ixx="200" ixy="0" ixz="0" iyy="800" iyz="0" izz="900"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0.4" rpy="0 0 0"/>
+      <geometry>
+        <box size="4.5 2.0 0.8"/>
+      </geometry>
+      <material name="silver">
+        <color rgba="0.75 0.75 0.75 1.0"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0.4" rpy="0 0 0"/>
+      <geometry>
+        <box size="4.5 2.0 0.8"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <!-- ══════════ FRONT-LEFT STEERING ══════════ -->
+  <link name="fl_steering_link">
+    <inertial>
+      <mass value="0.1"/>
+      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
+    </inertial>
+  </link>
+  <joint name="fl_steer_j" type="revolute">
+    <parent link="base_link"/>
+    <child link="fl_steering_link"/>
+    <origin xyz="1.5 0.8 0" rpy="0 0 0"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-0.6" upper="0.6" effort="100" velocity="10"/>
+  </joint>
+
+  <!-- ══════════ FRONT-RIGHT STEERING ══════════ -->
+  <link name="fr_steering_link">
+    <inertial>
+      <mass value="0.1"/>
+      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
+    </inertial>
+  </link>
+  <joint name="fr_steer_j" type="revolute">
+    <parent link="base_link"/>
+    <child link="fr_steering_link"/>
+    <origin xyz="1.5 -0.8 0" rpy="0 0 0"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-0.6" upper="0.6" effort="100" velocity="10"/>
+  </joint>
+
+  <!-- ══════════ FRONT-LEFT WHEEL ══════════ -->
+  <link name="fl_wheel">
+    <inertial>
+      <mass value="15.0"/>
+      <inertia ixx="0.4" ixy="0" ixz="0" iyy="0.7" iyz="0" izz="0.4"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="1.5708 0 0"/>
+      <geometry>
+        <cylinder radius="0.4" length="0.25"/>
+      </geometry>
+      <material name="black">
+        <color rgba="0.1 0.1 0.1 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="1.5708 0 0"/>
+      <geometry>
+        <cylinder radius="0.4" length="0.25"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="fl_j" type="continuous">
+    <parent link="fl_steering_link"/>
+    <child link="fl_wheel"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+  </joint>
+
+  <!-- ══════════ FRONT-RIGHT WHEEL ══════════ -->
+  <link name="fr_wheel">
+    <inertial>
+      <mass value="15.0"/>
+      <inertia ixx="0.4" ixy="0" ixz="0" iyy="0.7" iyz="0" izz="0.4"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="1.5708 0 0"/>
+      <geometry>
+        <cylinder radius="0.4" length="0.25"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="1.5708 0 0"/>
+      <geometry>
+        <cylinder radius="0.4" length="0.25"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="fr_j" type="continuous">
+    <parent link="fr_steering_link"/>
+    <child link="fr_wheel"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+  </joint>
+
+  <!-- ══════════ REAR-LEFT WHEEL ══════════ -->
+  <link name="rl_wheel">
+    <inertial>
+      <mass value="15.0"/>
+      <inertia ixx="0.4" ixy="0" ixz="0" iyy="0.7" iyz="0" izz="0.4"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="1.5708 0 0"/>
+      <geometry>
+        <cylinder radius="0.4" length="0.25"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="1.5708 0 0"/>
+      <geometry>
+        <cylinder radius="0.4" length="0.25"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="rl_j" type="continuous">
+    <parent link="base_link"/>
+    <child link="rl_wheel"/>
+    <origin xyz="-1.5 0.8 0" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+  </joint>
+
+  <!-- ══════════ REAR-RIGHT WHEEL ══════════ -->
+  <link name="rr_wheel">
+    <inertial>
+      <mass value="15.0"/>
+      <inertia ixx="0.4" ixy="0" ixz="0" iyy="0.7" iyz="0" izz="0.4"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="1.5708 0 0"/>
+      <geometry>
+        <cylinder radius="0.4" length="0.25"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="1.5708 0 0"/>
+      <geometry>
+        <cylinder radius="0.4" length="0.25"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="rr_j" type="continuous">
+    <parent link="base_link"/>
+    <child link="rr_wheel"/>
+    <origin xyz="-1.5 -0.8 0" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+  </joint>
+
+  <!-- ══════════ LIDAR LINK ══════════ -->
+  <link name="lidar_link">
+    <inertial>
+      <mass value="0.5"/>
+      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <cylinder radius="0.08" length="0.12"/>
+      </geometry>
+      <material name="red">
+        <color rgba="0.8 0.1 0.1 1"/>
+      </material>
+    </visual>
+  </link>
+  <joint name="lidar_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="lidar_link"/>
+    <origin xyz="0 0 1.5" rpy="0 0 0"/>
+  </joint>
+</robot>
