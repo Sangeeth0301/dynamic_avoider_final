@@ -2,109 +2,107 @@
 <sdf version="1.8">
   <world name="super_dynamic_world">
     <physics name="1ms" type="ignored">
-      <max_step_size>0.001</max_step_size>
+      <max_step_size>0.002</max_step_size>
       <real_time_factor>1.0</real_time_factor>
     </physics>
 
     <plugin filename="gz-sim-physics-system" name="gz::sim::systems::Physics" />
     <plugin filename="gz-sim-user-commands-system" name="gz::sim::systems::UserCommands" />
     <plugin filename="gz-sim-scene-broadcaster-system" name="gz::sim::systems::SceneBroadcaster" />
-    <plugin filename="gz-sim-sensors-system" name="gz::sim::systems::Sensors"><render_engine>ogre2</render_engine></plugin>
+    <plugin filename="gz-sim-sensors-system" name="gz::sim::systems::Sensors">
+      <render_engine>ogre2</render_engine>
+    </plugin>
 
-    <!-- Premium Cinematic Lighting -->
-    <light type="directional" name="super_sun">
+    <!-- Professional Lighting -->
+    <light type="directional" name="sun">
       <cast_shadows>true</cast_shadows>
-      <pose>0 0 10 0 0 0</pose>
-      <diffuse>0.9 0.9 0.8 1</diffuse>
-      <specular>0.5 0.5 0.5 1</specular>
-      <attenuation><range>1000</range><constant>0.9</constant><linear>0.01</linear><quadratic>0.001</quadratic></attenuation>
-      <direction>-0.5 0.1 -0.9</direction>
-    </light>
-    <light type="point" name="arena_light">
-      <pose>0 0 15 0 0 0</pose>
-      <diffuse>0.5 0.5 0.5 1</diffuse>
-      <specular>0.3 0.3 0.3 1</specular>
-      <attenuation><range>50</range><constant>0.5</constant><linear>0.01</linear><quadratic>0.001</quadratic></attenuation>
-      <cast_shadows>false</cast_shadows>
+      <pose>0 0 20 0 0 0</pose>
+      <diffuse>0.8 0.8 0.8 1</diffuse>
+      <specular>0.2 0.2 0.2 1</specular>
+      <direction>0.5 0.5 -1</direction>
     </light>
 
-    <model name="super_ground">
+    <!-- Ground Plane (Lifted slightly to prevent z-fighting with visuals) -->
+    <model name="ground_plane">
       <static>true</static>
       <link name="link">
         <collision name="collision">
           <geometry><plane><normal>0 0 1</normal><size>100 100</size></plane></geometry>
         </collision>
         <visual name="visual">
-          <pose>0 0 -0.01 0 0 0</pose>
           <geometry><plane><normal>0 0 1</normal><size>100 100</size></plane></geometry>
-          <material><ambient>0.6 0.6 0.6 1</ambient><diffuse>0.7 0.7 0.7 1</diffuse></material>
+          <material>
+            <ambient>0.5 0.5 0.5 1</ambient>
+            <diffuse>0.7 0.7 0.7 1</diffuse>
+            <specular>0.1 0.1 0.1 1</specular>
+          </material>
         </visual>
       </link>
     </model>
 
-    <scene>
-      <ambient>0.4 0.4 0.4 1</ambient>
-      <background>0.7 0.8 0.9 1</background>
-      <shadows>true</shadows>
-      <sky><clouds><speed>0.6</speed></clouds></sky>
-    </scene>
-
-    <!-- ARENA BOUNDARIES -->
-    <model name="super_arena">
+    <!-- Compound Walls: 30x30m boundary -->
+    <model name="compound">
       <static>true</static>
-      <link name="link">
-        <visual name="wall_n"><geometry><box><size>30 0.5 2</size></box></geometry><pose>0 15 1 0 0 0</pose><material><ambient>0.3 0.3 0.3 1</ambient><diffuse>0.3 0.3 0.3 1</diffuse></material></visual>
-        <visual name="wall_s"><geometry><box><size>30 0.5 2</size></box></geometry><pose>0 -15 1 0 0 0</pose><material><ambient>0.3 0.3 0.3 1</ambient><diffuse>0.3 0.3 0.3 1</diffuse></material></visual>
-        <visual name="wall_e"><geometry><box><size>0.5 30 2</size></box></geometry><pose>15 0 1 0 0 0</pose><material><ambient>0.3 0.3 0.3 1</ambient><diffuse>0.3 0.3 0.3 1</diffuse></material></visual>
-        <visual name="wall_w"><geometry><box><size>0.5 30 2</size></box></geometry><pose>-15 0 1 0 0 0</pose><material><ambient>0.3 0.3 0.3 1</ambient><diffuse>0.3 0.3 0.3 1</diffuse></material></visual>
-        <collision name="c_n"><geometry><box><size>30 0.5 2</size></box></geometry><pose>0 15 1 0 0 0</pose></collision>
-        <collision name="c_s"><geometry><box><size>30 0.5 2</size></box></geometry><pose>0 -15 1 0 0 0</pose></collision>
-        <collision name="c_e"><geometry><box><size>0.5 30 2</size></box></geometry><pose>15 0 1 0 0 0</pose></collision>
-        <collision name="c_w"><geometry><box><size>0.5 30 2</size></box></geometry><pose>-15 0 1 0 0 0</pose></collision>
+      <link name="walls">
+        <visual name="wall_n"><geometry><box><size>30 0.5 2.5</size></box></geometry><pose>0 15 1.25 0 0 0</pose><material><ambient>0.2 0.2 0.2 1</ambient><diffuse>0.4 0.4 0.4 1</diffuse></material></visual>
+        <collision name="c_n"><geometry><box><size>30 0.5 2.5</size></box></geometry><pose>0 15 1.25 0 0 0</pose></collision>
         
-        <!-- Architectural Pillars -->
-        <visual name="p1"><geometry><cylinder><radius>0.8</radius><length>2</length></cylinder></geometry><pose>7 7 1 0 0 0</pose><material><ambient>0.6 0 0 1</ambient><diffuse>0.6 0 0 1</diffuse></material></visual>
-        <visual name="p2"><geometry><cylinder><radius>0.8</radius><length>2</length></cylinder></geometry><pose>-7 7 1 0 0 0</pose><material><ambient>0.6 0 0 1</ambient><diffuse>0.6 0 0 1</diffuse></material></visual>
-        <visual name="p3"><geometry><cylinder><radius>0.8</radius><length>2</length></cylinder></geometry><pose>7 -7 1 0 0 0</pose><material><ambient>0.6 0 0 1</ambient><diffuse>0.6 0 0 1</diffuse></material></visual>
-        <visual name="p4"><geometry><cylinder><radius>0.8</radius><length>2</length></cylinder></geometry><pose>-7 -7 1 0 0 0</pose><material><ambient>0.6 0 0 1</ambient><diffuse>0.6 0 0 1</diffuse></material></visual>
-        <collision name="cp1"><geometry><cylinder><radius>0.8</radius><length>2</length></cylinder></geometry><pose>7 7 1 0 0 0</pose></collision>
-        <collision name="cp2"><geometry><cylinder><radius>0.8</radius><length>2</length></cylinder></geometry><pose>-7 7 1 0 0 0</pose></collision>
-        <collision name="cp3"><geometry><cylinder><radius>0.8</radius><length>2</length></cylinder></geometry><pose>7 -7 1 0 0 0</pose></collision>
-        <collision name="cp4"><geometry><cylinder><radius>0.8</radius><length>2</length></cylinder></geometry><pose>-7 -7 1 0 0 0</pose></collision>
+        <visual name="wall_s"><geometry><box><size>30 0.5 2.5</size></box></geometry><pose>0 -15 1.25 0 0 0</pose><material><ambient>0.2 0.2 0.2 1</ambient><diffuse>0.4 0.4 0.4 1</diffuse></material></visual>
+        <collision name="c_s"><geometry><box><size>30 0.5 2.5</size></box></geometry><pose>0 -15 1.25 0 0 0</pose></collision>
+        
+        <visual name="wall_e"><geometry><box><size>0.5 30 2.5</size></box></geometry><pose>15 0 1.25 0 0 0</pose><material><ambient>0.2 0.2 0.2 1</ambient><diffuse>0.4 0.4 0.4 1</diffuse></material></visual>
+        <collision name="c_e"><geometry><box><size>0.5 30 2.5</size></box></geometry><pose>15 0 1.25 0 0 0</pose></collision>
+        
+        <visual name="wall_w"><geometry><box><size>0.5 30 2.5</size></box></geometry><pose>-15 0 1.25 0 0 0</pose><material><ambient>0.2 0.2 0.2 1</ambient><diffuse>0.4 0.4 0.4 1</diffuse></material></visual>
+        <collision name="c_w"><geometry><box><size>0.5 30 2.5</size></box></geometry><pose>-15 0 1.25 0 0 0</pose></collision>
+
+        <!-- 4 Pillars in the middle (forming a square) -->
+        <visual name="p1"><geometry><cylinder><radius>0.6</radius><length>2.5</length></cylinder></geometry><pose>6 6 1.25 0 0 0</pose><material><ambient>0.6 0.1 0.1 1</ambient><diffuse>0.8 0.2 0.2 1</diffuse></material></visual>
+        <collision name="cp1"><geometry><cylinder><radius>0.6</radius><length>2.5</length></cylinder></geometry><pose>6 6 1.25 0 0 0</pose></collision>
+        
+        <visual name="p2"><geometry><cylinder><radius>0.6</radius><length>2.5</length></cylinder></geometry><pose>-6 6 1.25 0 0 0</pose><material><ambient>0.6 0.1 0.1 1</ambient><diffuse>0.8 0.2 0.2 1</diffuse></material></visual>
+        <collision name="cp2"><geometry><cylinder><radius>0.6</radius><length>2.5</length></cylinder></geometry><pose>-6 6 1.25 0 0 0</pose></collision>
+        
+        <visual name="p3"><geometry><cylinder><radius>0.6</radius><length>2.5</length></cylinder></geometry><pose>6 -6 1.25 0 0 0</pose><material><ambient>0.6 0.1 0.1 1</ambient><diffuse>0.8 0.2 0.2 1</diffuse></material></visual>
+        <collision name="cp3"><geometry><cylinder><radius>0.6</radius><length>2.5</length></cylinder></geometry><pose>6 -6 1.25 0 0 0</pose></collision>
+        
+        <visual name="p4"><geometry><cylinder><radius>0.6</radius><length>2.5</length></cylinder></geometry><pose>-6 -6 1.25 0 0 0</pose><material><ambient>0.6 0.1 0.1 1</ambient><diffuse>0.8 0.2 0.2 1</diffuse></material></visual>
+        <collision name="cp4"><geometry><cylinder><radius>0.6</radius><length>2.5</length></cylinder></geometry><pose>-6 -6 1.25 0 0 0</pose></collision>
       </link>
     </model>
 
-    <!-- SUV (Precision Corner Spawn) -->
+    <!-- Super Car: Best starting position (bottom center, clear of pillars) -->
     <model name="super_car">
+      <pose>0 -12 0.401 0 0 1.57</pose>
       <static>false</static>
-      <pose>-13 -13 0.401 0 0 0.785</pose>
-
       <link name="base_link">
         <inertial><mass>1500.0</mass><inertia><ixx>625.0</ixx><iyy>2656.0</iyy><izz>3031.0</izz></inertia></inertial>
         <collision name="collision"><pose>0 0 0.5 0 0 0</pose><geometry><box><size>4.5 2 1</size></box></geometry></collision>
-        <visual name="suv_visual"><pose>0 0 0 0 0 0</pose><geometry><mesh><scale>0.06 0.06 0.06</scale><uri>/home/sangeeth/.gz/fuel/fuel.gazebosim.org/openrobotics/models/suv/4/meshes/suv.obj</uri></mesh></geometry></visual>
+        <visual name="suv_visual">
+          <geometry><mesh><scale>0.06 0.06 0.06</scale><uri>https://fuel.gazebosim.org/1.0/openrobotics/models/suv/4/meshes/suv.obj</uri></mesh></geometry>
+        </visual>
       </link>
+      <!-- Wheels and Steering Joints -->
+      <link name="fl_steering_link"><pose>1.5 0.8 0 0 0 0</pose></link>
+      <link name="fr_steering_link"><pose>1.5 -0.8 0 0 0 0</pose></link>
+      <joint name="fl_steer_j" type="revolute"><parent>base_link</parent><child>fl_steering_link</child><axis><xyz>0 0 1</xyz><limit><lower>-0.6</lower><upper>0.6</upper></limit></axis></joint>
+      <joint name="fr_steer_j" type="revolute"><parent>base_link</parent><child>fr_steering_link</child><axis><xyz>0 0 1</xyz><limit><lower>-0.6</lower><upper>0.6</upper></limit></axis></joint>
+      
+      <link name="fl_wheel"><pose>1.5 0.8 0 0 0 0</pose><collision name="c"><pose>0 0 0 1.57 0 0</pose><geometry><cylinder><radius>0.4</radius><length>0.3</length></cylinder></geometry></collision><visual name="v"><pose>0 0 0 1.57 0 0</pose><geometry><cylinder><radius>0.4</radius><length>0.3</length></cylinder></geometry><material><ambient>0.1 0.1 0.1 1</ambient></material></visual></link>
+      <link name="fr_wheel"><pose>1.5 -0.8 0 0 0 0</pose><collision name="c"><pose>0 0 0 1.57 0 0</pose><geometry><cylinder><radius>0.4</radius><length>0.3</length></cylinder></geometry></collision><visual name="v"><pose>0 0 0 1.57 0 0</pose><geometry><cylinder><radius>0.4</radius><length>0.3</length></cylinder></geometry><material><ambient>0.1 0.1 0.1 1</ambient></material></visual></link>
+      <link name="rl_wheel"><pose>-1.5 0.8 0 0 0 0</pose><collision name="c"><pose>0 0 0 1.57 0 0</pose><geometry><cylinder><radius>0.4</radius><length>0.3</length></cylinder></geometry></collision><visual name="v"><pose>0 0 0 1.57 0 0</pose><geometry><cylinder><radius>0.4</radius><length>0.3</length></cylinder></geometry><material><ambient>0.1 0.1 0.1 1</ambient></material></visual></link>
+      <link name="rr_wheel"><pose>-1.5 -0.8 0 0 0 0</pose><collision name="c"><pose>0 0 0 1.57 0 0</pose><geometry><cylinder><radius>0.4</radius><length>0.3</length></cylinder></geometry></collision><visual name="v"><pose>0 0 0 1.57 0 0</pose><geometry><cylinder><radius>0.4</radius><length>0.3</length></cylinder></geometry><material><ambient>0.1 0.1 0.1 1</ambient></material></visual></link>
 
-      <link name="fl_steering_link"><pose>1.5 0.8 0 0 0 0</pose><inertial><mass>1</mass><inertia><ixx>0.01</ixx><iyy>0.01</iyy><izz>0.01</izz></inertia></inertial></link>
-      <link name="fr_steering_link"><pose>1.5 -0.8 0 0 0 0</pose><inertial><mass>1</mass><inertia><ixx>0.01</ixx><iyy>0.01</iyy><izz>0.01</izz></inertia></inertial></link>
-
-      <link name="front_left_wheel"><pose>1.5 0.8 0 0 0 0</pose><inertial><mass>30</mass><inertia><ixx>0.5</ixx><iyy>0.5</iyy><izz>1.0</izz></inertia></inertial><collision name="collision"><pose>0 0 0 1.5707 0 0</pose><geometry><cylinder><radius>0.4</radius><length>0.3</length></cylinder></geometry><surface><friction><ode><mu>10.0</mu><mu2>10.0</mu2></ode></friction><contact><ode><kp>10000000.0</kp><kd>10.0</kd></ode></contact></surface></collision><visual name="visual"><pose>0 0 0 1.5707 0 0</pose><geometry><cylinder><radius>0.4</radius><length>0.3</length></cylinder></geometry><material><ambient>0.1 0.1 0.1 1</ambient><diffuse>0.1 0.1 0.1 1</diffuse></material></visual></link>
-      <link name="front_right_wheel"><pose>1.5 -0.8 0 0 0 0</pose><inertial><mass>30</mass><inertia><ixx>0.5</ixx><iyy>0.5</iyy><izz>1.0</izz></inertia></inertial><collision name="collision"><pose>0 0 0 1.5707 0 0</pose><geometry><cylinder><radius>0.4</radius><length>0.3</length></cylinder></geometry><surface><friction><ode><mu>10.0</mu><mu2>10.0</mu2></ode></friction><contact><ode><kp>10000000.0</kp><kd>10.0</kd></ode></contact></surface></collision><visual name="visual"><pose>0 0 0 1.5707 0 0</pose><geometry><cylinder><radius>0.4</radius><length>0.3</length></cylinder></geometry><material><ambient>0.1 0.1 0.1 1</ambient><diffuse>0.1 0.1 0.1 1</diffuse></material></visual></link>
-      <link name="rear_left_wheel"><pose>-1.5 0.8 0 0 0 0</pose><inertial><mass>30</mass><inertia><ixx>0.5</ixx><iyy>0.5</iyy><izz>1.0</izz></inertia></inertial><collision name="collision"><pose>0 0 0 1.5707 0 0</pose><geometry><cylinder><radius>0.4</radius><length>0.3</length></cylinder></geometry><surface><friction><ode><mu>10.0</mu><mu2>10.0</mu2></ode></friction><contact><ode><kp>10000000.0</kp><kd>10.0</kd></ode></contact></surface></collision><visual name="visual"><pose>0 0 0 1.5707 0 0</pose><geometry><cylinder><radius>0.4</radius><length>0.3</length></cylinder></geometry><material><ambient>0.1 0.1 0.1 1</ambient><diffuse>0.1 0.1 0.1 1</diffuse></material></visual></link>
-      <link name="rear_right_wheel"><pose>-1.5 -0.8 0 0 0 0</pose><inertial><mass>30</mass><inertia><ixx>0.5</ixx><iyy>0.5</iyy><izz>1.0</izz></inertia></inertial><collision name="collision"><pose>0 0 0 1.5707 0 0</pose><geometry><cylinder><radius>0.4</radius><length>0.3</length></cylinder></geometry><surface><friction><ode><mu>10.0</mu><mu2>10.0</mu2></ode></friction><contact><ode><kp>10000000.0</kp><kd>10.0</kd></ode></contact></surface></collision><visual name="visual"><pose>0 0 0 1.5707 0 0</pose><geometry><cylinder><radius>0.4</radius><length>0.3</length></cylinder></geometry><material><ambient>0.1 0.1 0.1 1</ambient><diffuse>0.1 0.1 0.1 1</diffuse></material></visual></link>
-
-      <joint name="fl_steer_j" type="revolute"><parent>base_link</parent><child>fl_steering_link</child><axis><xyz>0 0 1</xyz><limit><lower>-0.6</lower><upper>0.6</upper></limit><dynamics><damping>2.0</damping><friction>0.1</friction></dynamics></axis></joint>
-      <joint name="fr_steer_j" type="revolute"><parent>base_link</parent><child>fr_steering_link</child><axis><xyz>0 0 1</xyz><limit><lower>-0.6</lower><upper>0.6</upper></limit><dynamics><damping>2.0</damping><friction>0.1</friction></dynamics></axis></joint>
-
-      <joint name="fl_j" type="revolute"><parent>fl_steering_link</parent><child>front_left_wheel</child><axis><xyz>0 1 0</xyz><limit><lower>-1e+16</lower><upper>1e+16</upper></limit><dynamics><damping>0.5</damping><friction>0.1</friction></dynamics></axis></joint>
-      <joint name="fr_j" type="revolute"><parent>fr_steering_link</parent><child>front_right_wheel</child><axis><xyz>0 1 0</xyz><limit><lower>-1e+16</lower><upper>1e+16</upper></limit><dynamics><damping>0.5</damping><friction>0.1</friction></dynamics></axis></joint>
-      <joint name="rl_j" type="revolute"><parent>base_link</parent><child>rear_left_wheel</child><axis><xyz>0 1 0</xyz><limit><lower>-1e+16</lower><upper>1e+16</upper></limit><dynamics><damping>0.5</damping><friction>0.1</friction></dynamics></axis></joint>
-      <joint name="rr_j" type="revolute"><parent>base_link</parent><child>rear_right_wheel</child><axis><xyz>0 1 0</xyz><limit><lower>-1e+16</lower><upper>1e+16</upper></limit><dynamics><damping>0.5</damping><friction>0.1</friction></dynamics></axis></joint>
+      <joint name="fl_j" type="revolute"><parent>fl_steering_link</parent><child>fl_wheel</child><axis><xyz>0 1 0</xyz></axis></joint>
+      <joint name="fr_j" type="revolute"><parent>fr_steering_link</parent><child>fr_wheel</child><axis><xyz>0 1 0</xyz></axis></joint>
+      <joint name="rl_j" type="revolute"><parent>base_link</parent><child>rl_wheel</child><axis><xyz>0 1 0</xyz></axis></joint>
+      <joint name="rr_j" type="revolute"><parent>base_link</parent><child>rr_wheel</child><axis><xyz>0 1 0</xyz></axis></joint>
 
       <link name="lidar_link">
         <pose>0 0 1.5 0 0 0</pose>
         <sensor name="lidar" type="gpu_ray">
-          <always_on>1</always_on><update_rate>20</update_rate><visualize>true</visualize><topic>/scan</topic><ray><scan><horizontal><samples>360</samples><resolution>1</resolution><min_angle>-3.14</min_angle><max_angle>3.14</max_angle></horizontal></scan><range><min>0.3</min><max>15.0</max><resolution>0.01</resolution></range></ray>
+          <always_on>1</always_on><update_rate>20</update_rate><visualize>true</visualize><topic>/scan</topic>
+          <ray><scan><horizontal><samples>360</samples><resolution>1</resolution><min_angle>-3.14</min_angle><max_angle>3.14</max_angle></horizontal></scan><range><min>0.3</min><max>15.0</max><resolution>0.01</resolution></range></ray>
         </sensor>
       </link>
       <joint name="lidar_joint" type="fixed"><parent>base_link</parent><child>lidar_link</child></joint>
@@ -115,63 +113,73 @@
         <topic>/cmd_vel</topic><odom_topic>/odom</odom_topic><odom_publish_frequency>20</odom_publish_frequency><frame_id>odom</frame_id><child_frame_id>base_link</child_frame_id>
       </plugin>
     </model>
-    
-    <!-- 6 CENTRALIZED ACTORS (Z=0.08 to permanently kill blinking) -->
+
+    <!-- 6 Actors with Non-clashing Dynamic Trajectories (Z=0.08 to prevent blinking) -->
     <actor name="h1">
       <skin><filename>https://fuel.gazebosim.org/1.0/Mingfei/models/actor/tip/files/meshes/walk.dae</filename></skin>
       <script><loop>true</loop><auto_start>true</auto_start><trajectory id="0" type="walk">
-          <waypoint><time>0</time><pose>4 4 0.08 0 0 -1.57</pose></waypoint>
-          <waypoint><time>15</time><pose>4 -4 0.08 0 0 -1.57</pose></waypoint>
-          <waypoint><time>30</time><pose>-4 -4 0.08 0 0 3.14</pose></waypoint>
-          <waypoint><time>45</time><pose>-4 4 0.08 0 0 1.57</pose></waypoint>
-          <waypoint><time>60</time><pose>4 4 0.08 0 0 0</pose></waypoint>
+          <waypoint><time>0</time><pose>8 8 0.08 0 0 -1.57</pose></waypoint>
+          <waypoint><time>10</time><pose>8 -8 0.08 0 0 -1.57</pose></waypoint>
+          <waypoint><time>20</time><pose>12 -8 0.08 0 0 0</pose></waypoint>
+          <waypoint><time>30</time><pose>12 8 0.08 0 0 1.57</pose></waypoint>
+          <waypoint><time>40</time><pose>8 8 0.08 0 0 3.14</pose></waypoint>
       </trajectory></script>
     </actor>
+
     <actor name="h2">
       <skin><filename>https://fuel.gazebosim.org/1.0/Mingfei/models/actor/tip/files/meshes/walk.dae</filename></skin>
       <script><loop>true</loop><auto_start>true</auto_start><trajectory id="0" type="walk">
-          <waypoint><time>0</time><pose>-4 4 0.08 0 0 0</pose></waypoint>
-          <waypoint><time>20</time><pose>4 4 0.08 0 0 0</pose></waypoint>
-          <waypoint><time>40</time><pose>4 -4 0.08 0 0 -1.57</pose></waypoint>
-          <waypoint><time>60</time><pose>-4 -4 0.08 0 0 3.14</pose></waypoint>
-          <waypoint><time>80</time><pose>-4 4 0.08 0 0 1.57</pose></waypoint>
+          <waypoint><time>0</time><pose>-8 8 0.08 0 0 0</pose></waypoint>
+          <waypoint><time>15</time><pose>-2 8 0.08 0 0 0</pose></waypoint>
+          <waypoint><time>30</time><pose>-2 12 0.08 0 0 1.57</pose></waypoint>
+          <waypoint><time>45</time><pose>-8 12 0.08 0 0 3.14</pose></waypoint>
+          <waypoint><time>60</time><pose>-8 8 0.08 0 0 -1.57</pose></waypoint>
       </trajectory></script>
     </actor>
+
     <actor name="h3">
       <skin><filename>https://fuel.gazebosim.org/1.0/Mingfei/models/actor/tip/files/meshes/walk.dae</filename></skin>
       <script><loop>true</loop><auto_start>true</auto_start><trajectory id="0" type="walk">
-          <waypoint><time>0</time><pose>0 6 0.08 0 0 -1.57</pose></waypoint>
-          <waypoint><time>25</time><pose>0 -6 0.08 0 0 -1.57</pose></waypoint>
-          <waypoint><time>50</time><pose>2 -6 0.08 0 0 0</pose></waypoint>
-          <waypoint><time>75</time><pose>2 6 0.08 0 0 1.57</pose></waypoint>
-          <waypoint><time>100</time><pose>0 6 0.08 0 0 3.14</pose></waypoint>
+          <waypoint><time>0</time><pose>-12 -8 0.08 0 0 0</pose></waypoint>
+          <waypoint><time>12</time><pose>-8 -8 0.08 0 0 0</pose></waypoint>
+          <waypoint><time>24</time><pose>-8 -12 0.08 0 0 -1.57</pose></waypoint>
+          <waypoint><time>36</time><pose>-12 -12 0.08 0 0 3.14</pose></waypoint>
+          <waypoint><time>48</time><pose>-12 -8 0.08 0 0 1.57</pose></waypoint>
       </trajectory></script>
     </actor>
+
     <actor name="h4">
       <skin><filename>https://fuel.gazebosim.org/1.0/Mingfei/models/actor/tip/files/meshes/walk.dae</filename></skin>
       <script><loop>true</loop><auto_start>true</auto_start><trajectory id="0" type="walk">
-          <waypoint><time>0</time><pose>-6 0 0.08 0 0 0</pose></waypoint>
-          <waypoint><time>30</time><pose>6 0 0.08 0 0 0</pose></waypoint>
-          <waypoint><time>60</time><pose>6 -2 0.08 0 0 -1.57</pose></waypoint>
-          <waypoint><time>90</time><pose>-6 -2 0.08 0 0 3.14</pose></waypoint>
-          <waypoint><time>120</time><pose>-6 0 0.08 0 0 0</pose></waypoint>
+          <waypoint><time>0</time><pose>12 -12 0.08 0 0 1.57</pose></waypoint>
+          <waypoint><time>15</time><pose>12 -8 0.08 0 0 1.57</pose></waypoint>
+          <waypoint><time>30</time><pose>8 -8 0.08 0 0 3.14</pose></waypoint>
+          <waypoint><time>45</time><pose>8 -12 0.08 0 0 -1.57</pose></waypoint>
+          <waypoint><time>60</time><pose>12 -12 0.08 0 0 0</pose></waypoint>
       </trajectory></script>
     </actor>
+
     <actor name="h5">
       <skin><filename>https://fuel.gazebosim.org/1.0/Mingfei/models/actor/tip/files/meshes/walk.dae</filename></skin>
       <script><loop>true</loop><auto_start>true</auto_start><trajectory id="0" type="walk">
-          <waypoint><time>0</time><pose>3 3 0.08 0 0 -2.35</pose></waypoint>
-          <waypoint><time>40</time><pose>-3 -3 0.08 0 0 -2.35</pose></waypoint>
-          <waypoint><time>80</time><pose>3 3 0.08 0 0 0.78</pose></waypoint>
+          <waypoint><time>0</time><pose>0 4 0.08 0 0 3.14</pose></waypoint>
+          <waypoint><time>10</time><pose>-4 4 0.08 0 0 3.14</pose></waypoint>
+          <waypoint><time>20</time><pose>-4 0 0.08 0 0 -1.57</pose></waypoint>
+          <waypoint><time>30</time><pose>0 0 0.08 0 0 0</pose></waypoint>
+          <waypoint><time>40</time><pose>0 4 0.08 0 0 1.57</pose></waypoint>
       </trajectory></script>
     </actor>
+
     <actor name="h6">
       <skin><filename>https://fuel.gazebosim.org/1.0/Mingfei/models/actor/tip/files/meshes/walk.dae</filename></skin>
       <script><loop>true</loop><auto_start>true</auto_start><trajectory id="0" type="walk">
-          <waypoint><time>0</time><pose>-3 3 0.08 0 0 -0.78</pose></waypoint>
-          <waypoint><time>40</time><pose>3 -3 0.08 0 0 -0.78</pose></waypoint>
-          <waypoint><time>80</time><pose>-3 3 0.08 0 0 2.35</pose></waypoint>
+          <waypoint><time>0</time><pose>4 -4 0.08 0 0 0</pose></waypoint>
+          <waypoint><time>12</time><pose>4 0 0.08 0 0 1.57</pose></waypoint>
+          <waypoint><time>24</time><pose>0 0 0.08 0 0 3.14</pose></waypoint>
+          <waypoint><time>36</time><pose>0 -4 0.08 0 0 -1.57</pose></waypoint>
+          <waypoint><time>48</time><pose>4 -4 0.08 0 0 0</pose></waypoint>
       </trajectory></script>
     </actor>
+
   </world>
 </sdf>
