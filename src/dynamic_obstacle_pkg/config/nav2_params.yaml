@@ -5,7 +5,7 @@ amcl:
 bt_navigator:
   ros__parameters:
     use_sim_time: True
-    global_frame: odom
+    global_frame: map
     robot_base_frame: base_link
     odom_topic: odom
     bt_loop_duration: 10
@@ -68,7 +68,7 @@ local_costmap:
     ros__parameters:
       update_frequency: 10.0
       publish_frequency: 5.0
-      global_frame: odom
+      global_frame: map
       robot_base_frame: base_link
       use_sim_time: True
       rolling_window: true
@@ -99,14 +99,14 @@ global_costmap:
     ros__parameters:
       update_frequency: 1.0
       publish_frequency: 2.0
-      global_frame: odom
+      global_frame: map
       robot_base_frame: base_link
       use_sim_time: True
       rolling_window: true
-      width: 40
-      height: 40
+      width: 50
+      height: 50
       resolution: 0.1
-      footprint: "[[2.25, 1.0], [2.25, -1.0], [-2.25, -1.0], [-2.25, 1.0]]"
+      footprint: "[[2.25, 1.1], [2.25, -1.1], [-2.25, -1.1], [-2.25, 1.1]]"
       plugins: ["obstacle_layer", "inflation_layer"]
       obstacle_layer:
         plugin: "nav2_costmap_2d::ObstacleLayer"
@@ -149,7 +149,7 @@ behavior_server:
       plugin: "nav2_behaviors::DriveOnHeading"
     wait:
       plugin: "nav2_behaviors::Wait"
-    global_frame: odom
+    global_frame: map
     robot_base_frame: base_link
     transform_timeout: 0.1
     use_sim_time: true
