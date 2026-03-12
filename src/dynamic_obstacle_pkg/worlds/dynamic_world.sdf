@@ -86,6 +86,11 @@
         <kingpin_width>1.7</kingpin_width><wheel_base>2.9</wheel_base><wheel_radius>0.4</wheel_radius><max_steering_angle>0.6</max_steering_angle>
         <topic>/cmd_vel</topic><odom_topic>/odom</odom_topic><odom_publish_frequency>20</odom_publish_frequency><frame_id>odom</frame_id><child_frame_id>base_link</child_frame_id>
       </plugin>
+
+      <plugin filename="gz-sim-joint-state-publisher-system" name="gz::sim::systems::JointStatePublisher">
+        <topic>/model/super_car/joint_state</topic>
+        <joint_name>fl_j</joint_name><joint_name>fr_j</joint_name><joint_name>rl_j</joint_name><joint_name>rr_j</joint_name><joint_name>fl_steer_j</joint_name><joint_name>fr_steer_j</joint_name>
+      </plugin>
     </model>
 
     <!-- Actors remain the same but with professional loops -->

@@ -53,7 +53,7 @@ def generate_launch_description():
         package='tf2_ros',
         executable='static_transform_publisher',
         output='screen',
-        arguments=['0', '0', '1.5', '0', '0', '0', 'base_link', 'super_car/lidar_link/lidar']
+        arguments=['0', '0', '1.2', '0', '0', '0', 'base_link', 'super_car/lidar_link/lidar']
     )
 
     # 5. Rviz (Visual Masterpiece)
