@@ -1,4 +1,4 @@
-# Dynamic Obstacle Avoider - Project 36
+# Dynamic Obstacle Avoider
 
 Navigate from A to B while avoiding moving actors (simulated humans) in Gazebo.
 
