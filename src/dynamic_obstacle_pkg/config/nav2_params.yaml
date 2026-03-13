@@ -258,7 +258,7 @@ slam_toolbox:
     map_frame: map
     base_frame: base_link
     scan_topic: /scan
-    laser_frame: base_link
+    laser_frame: lidar_link
     mode: mapping
     debug_logging: false
     throttle_scans: 1

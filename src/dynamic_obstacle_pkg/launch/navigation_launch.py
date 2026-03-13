@@ -23,6 +23,10 @@ def generate_launch_description():
     return LaunchDescription([
         DeclareLaunchArgument("use_sim_time", default_value="true"),
 
+        Node(package="slam_toolbox", executable="async_slam_toolbox_node",
+             name="slam_toolbox", output="screen",
+             parameters=[params_file, {"use_sim_time": use_sim_time}]),
+
         Node(package="nav2_controller", executable="controller_server",
              name="controller_server", output="screen",
              parameters=[params_file, {"use_sim_time": use_sim_time}]),

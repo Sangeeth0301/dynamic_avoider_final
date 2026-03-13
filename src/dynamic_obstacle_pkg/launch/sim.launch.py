@@ -10,6 +10,7 @@ def generate_launch_description():
     sdf    = os.path.join(pkg, 'worlds', 'dynamic_world.sdf')
     urdf   = os.path.join(pkg, 'urdf',   'super_car.urdf.xacro')
     rviz_f = os.path.join(pkg, 'rviz',   'nav2_view.rviz')
+    ekf_config = os.path.join(pkg, 'config', 'ekf.yaml')
 
     robot_desc = xacro.process_file(urdf).toxml()
 
@@ -22,6 +23,7 @@ def generate_launch_description():
         parameters=[{'robot_description': robot_desc, 'use_sim_time': True}],
         output='screen')
 
+    # Removed /tf bridge to prevent Gazebo from conflicting with EKF
     bridge = Node(
         package='ros_gz_bridge',
         executable='parameter_bridge',
@@ -33,23 +35,16 @@ def generate_launch_description():
             '/cmd_vel@geometry_msgs/msg/Twist]gz.msgs.Twist',
             '/odom@nav_msgs/msg/Odometry[gz.msgs.Odometry',
             '/joint_states@sensor_msgs/msg/JointState[gz.msgs.Model',
-            '/tf@tf2_msgs/msg/TFMessage[gz.msgs.Pose_V',
         ],
         output='screen')
 
-    static_map_odom = Node(
-        package='tf2_ros',
-        executable='static_transform_publisher',
-        name='static_tf_map_odom',
-        arguments=['0','0','0','0','0','0','1','map','odom'])
-
-    # Dynamic odom->base_link from actual odometry
-    odom_tf_relay = Node(
-        package='dynamic_obstacle_pkg',
-        executable='odom_tf_relay.py',
-        name='odom_tf_relay',
-        parameters=[{'use_sim_time': True}],
-        output='screen')
+    # Fuses /odom and /imu/data_raw into a smooth odom -> base_link transform
+    ekf = Node(
+        package='robot_localization',
+        executable='ekf_node',
+        name='ekf_filter_node',
+        output='screen',
+        parameters=[ekf_config, {'use_sim_time': True}])
 
     rviz = Node(
         package='rviz2',
@@ -62,7 +57,6 @@ def generate_launch_description():
         gazebo,
         rsp,
         TimerAction(period=3.0, actions=[bridge]),
-        static_map_odom,
-        TimerAction(period=4.0, actions=[odom_tf_relay]),
+        TimerAction(period=4.0, actions=[ekf]),
         TimerAction(period=2.0, actions=[rviz]),
     ])
