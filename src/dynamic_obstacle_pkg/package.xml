@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>dynamic_obstacle_pkg</name>
+  <version>0.0.0</version>
+  <description>Dynamic Obstacle Avoider - Navigate A to B avoiding moving actors</description>
+  <maintainer email="user@todo.todo">user</maintainer>
+  <license>Apache-2.0</license>
+  <buildtool_depend>ament_cmake</buildtool_depend>
+  <depend>rclcpp</depend>
+  <depend>rclcpp_action</depend>
+  <depend>ros_gz_sim</depend>
+  <depend>ros_gz_bridge</depend>
+  <depend>nav2_msgs</depend>
+  <depend>nav2_mppi_controller</depend>
+  <depend>nav2_navfn_planner</depend>
+  <depend>nav2_bt_navigator</depend>
+  <depend>nav2_lifecycle_manager</depend>
+  <depend>nav2_behaviors</depend>
+  <depend>nav2_velocity_smoother</depend>
+  <depend>nav2_collision_monitor</depend>
+  <depend>nav2_controller</depend>
+  <depend>nav2_planner</depend>
+  <depend>nav2_smoother</depend>
+  <depend>nav2_waypoint_follower</depend>
+  <depend>tf2</depend>
+  <depend>tf2_ros</depend>
+  <depend>tf2_geometry_msgs</depend>
+  <depend>geometry_msgs</depend>
+  <depend>sensor_msgs</depend>
+  <depend>nav_msgs</depend>
+  <depend>robot_state_publisher</depend>
+  <depend>robot_localization</depend>
+  <depend>slam_toolbox</depend>
+  <depend>xacro</depend>
+  <exec_depend>python3-nav2-simple-commander</exec_depend>
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>

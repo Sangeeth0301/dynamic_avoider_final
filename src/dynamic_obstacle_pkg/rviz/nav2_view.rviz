@@ -1,0 +1,53 @@
+Panels:
+  - Class: rviz_common/Displays
+    Name: Displays
+Visualization Manager:
+  Class: ""
+  Displays:
+    - Alpha: 0.5
+      Cell Size: 1
+      Class: rviz_default_plugins/Grid
+      Color: 160; 160; 164
+      Enabled: true
+      Name: Grid
+    - Class: rviz_default_plugins/RobotModel
+      Enabled: true
+      Name: RobotModel
+      Description Topic:
+        Value: /robot_description
+    - Class: rviz_default_plugins/LaserScan
+      Enabled: true
+      Name: LaserScan
+      Topic:
+        Value: /scan
+      Color: 255; 0; 0
+      Size (m): 0.05
+      Style: Points
+    - Class: rviz_default_plugins/Path
+      Enabled: true
+      Name: GlobalPath
+      Topic:
+        Value: /plan
+      Color: 0; 255; 0
+      Line Style: Lines
+    - Class: rviz_default_plugins/Map
+      Enabled: true
+      Name: Map
+      Topic:
+        Value: /map
+      Alpha: 0.7
+    - Class: rviz_default_plugins/TF
+      Enabled: true
+      Name: TF
+  Global Options:
+    Background Color: 48; 48; 48
+    Fixed Frame: odom
+    Frame Rate: 30
+  Tools:
+    - Class: rviz_default_plugins/Interact
+    - Class: rviz_default_plugins/MoveCamera
+  Views:
+    Current:
+      Class: rviz_default_plugins/TopDownOrtho
+      Scale: 20
+      Target Frame: base_link

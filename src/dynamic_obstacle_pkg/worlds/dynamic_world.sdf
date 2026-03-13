@@ -1,0 +1,241 @@
+<?xml version="1.0" ?>
+<sdf version="1.8">
+  <world name="dynamic_obstacle_world">
+    <physics name="4ms" type="ignored">
+      <max_step_size>0.004</max_step_size>
+      <real_time_factor>1.0</real_time_factor>
+    </physics>
+    <plugin filename="gz-sim-physics-system"           name="gz::sim::systems::Physics"/>
+    <plugin filename="gz-sim-user-commands-system"     name="gz::sim::systems::UserCommands"/>
+    <plugin filename="gz-sim-scene-broadcaster-system" name="gz::sim::systems::SceneBroadcaster"/>
+    <plugin filename="gz-sim-sensors-system"           name="gz::sim::systems::Sensors">
+      <render_engine>ogre2</render_engine>
+    </plugin>
+    <light type="directional" name="sun">
+      <cast_shadows>false</cast_shadows><pose>0 0 10 0 0 0</pose>
+      <diffuse>0.9 0.9 0.8 1</diffuse><specular>0.4 0.4 0.4 1</specular>
+      <direction>-0.5 0.1 -0.9</direction>
+    </light>
+    <scene><ambient>0.4 0.4 0.4 1</ambient><background>0.6 0.7 0.9 1</background><shadows>false</shadows></scene>
+
+    <model name="ground_plane"><static>true</static>
+      <link name="link">
+        <collision name="c"><geometry><plane><normal>0 0 1</normal><size>100 100</size></plane></geometry></collision>
+        <visual name="v"><geometry><plane><normal>0 0 1</normal><size>100 100</size></plane></geometry>
+          <material><ambient>0.5 0.5 0.5 1</ambient></material></visual>
+      </link>
+    </model>
+
+    <!-- ORANGE DIFF-DRIVE CAR starting at (-10, 0) -->
+    <model name="super_car">
+      <pose>-10 0 0.15 0 0 0</pose>
+      <static>false</static>
+      <link name="base_link">
+        <inertial>
+          <mass>20.0</mass>
+          <inertia><ixx>1.0</ixx><iyy>3.0</iyy><izz>3.5</izz><ixy>0</ixy><ixz>0</ixz><iyz>0</iyz></inertia>
+        </inertial>
+        <collision name="body_col">
+          <geometry><box><size>0.8 0.4 0.25</size></box></geometry>
+        </collision>
+        <visual name="body_vis">
+          <geometry><box><size>0.8 0.4 0.25</size></box></geometry>
+          <material><ambient>1.0 0.4 0.0 1</ambient><diffuse>1.0 0.4 0.0 1</diffuse></material>
+        </visual>
+        <visual name="cabin_vis">
+          <pose>-0.05 0 0.2 0 0 0</pose>
+          <geometry><box><size>0.35 0.3 0.15</size></box></geometry>
+          <material><ambient>0.3 0.5 0.9 0.8</ambient></material>
+        </visual>
+        <sensor name="lidar" type="gpu_lidar">
+          <pose>0 0 0.3 0 0 0</pose>
+          <always_on>true</always_on>
+          <update_rate>10</update_rate>
+          <visualize>false</visualize>
+          <topic>/scan</topic>
+          <gz:frame_id>base_link</gz:frame_id>
+          <lidar>
+            <scan>
+              <horizontal>
+                <samples>360</samples><resolution>1</resolution>
+                <min_angle>-3.14159</min_angle><max_angle>3.14159</max_angle>
+              </horizontal>
+              <vertical><samples>1</samples><min_angle>0</min_angle><max_angle>0</max_angle></vertical>
+            </scan>
+            <range><min>0.2</min><max>12.0</max><resolution>0.01</resolution></range>
+          </lidar>
+        </sensor>
+      </link>
+
+      <link name="left_wheel">
+        <pose>0 0.22 0 0 0 0</pose>
+        <inertial><mass>1.0</mass><inertia><ixx>0.01</ixx><iyy>0.02</iyy><izz>0.01</izz></inertia></inertial>
+        <collision name="c"><pose>0 0 0 1.5708 0 0</pose>
+          <geometry><cylinder><radius>0.15</radius><length>0.06</length></cylinder></geometry>
+        </collision>
+        <visual name="v"><pose>0 0 0 1.5708 0 0</pose>
+          <geometry><cylinder><radius>0.15</radius><length>0.06</length></cylinder></geometry>
+          <material><ambient>0.1 0.1 0.1 1</ambient></material>
+        </visual>
+      </link>
+      <joint name="left_wheel_joint" type="revolute">
+        <parent>base_link</parent><child>left_wheel</child>
+        <axis><xyz>0 1 0</xyz><limit><lower>-1e16</lower><upper>1e16</upper></limit></axis>
+      </joint>
+
+      <link name="right_wheel">
+        <pose>0 -0.22 0 0 0 0</pose>
+        <inertial><mass>1.0</mass><inertia><ixx>0.01</ixx><iyy>0.02</iyy><izz>0.01</izz></inertia></inertial>
+        <collision name="c"><pose>0 0 0 1.5708 0 0</pose>
+          <geometry><cylinder><radius>0.15</radius><length>0.06</length></cylinder></geometry>
+        </collision>
+        <visual name="v"><pose>0 0 0 1.5708 0 0</pose>
+          <geometry><cylinder><radius>0.15</radius><length>0.06</length></cylinder></geometry>
+          <material><ambient>0.1 0.1 0.1 1</ambient></material>
+        </visual>
+      </link>
+      <joint name="right_wheel_joint" type="revolute">
+        <parent>base_link</parent><child>right_wheel</child>
+        <axis><xyz>0 1 0</xyz><limit><lower>-1e16</lower><upper>1e16</upper></limit></axis>
+      </joint>
+
+      <link name="caster">
+        <pose>0.35 0 -0.05 0 0 0</pose>
+        <inertial><mass>0.5</mass><inertia><ixx>0.001</ixx><iyy>0.001</iyy><izz>0.001</izz></inertia></inertial>
+        <collision name="c"><geometry><sphere><radius>0.08</radius></sphere></geometry>
+        </collision>
+        <visual name="v"><geometry><sphere><radius>0.08</radius></sphere></geometry>
+          <material><ambient>0.5 0.5 0.5 1</ambient></material>
+        </visual>
+      </link>
+      <joint name="caster_joint" type="fixed">
+        <parent>base_link</parent><child>caster</child>
+      </joint>
+
+      <plugin filename="gz-sim-diff-drive-system" name="gz::sim::systems::DiffDrive">
+        <left_joint>left_wheel_joint</left_joint>
+        <right_joint>right_wheel_joint</right_joint>
+        <wheel_separation>0.44</wheel_separation>
+        <wheel_radius>0.15</wheel_radius>
+        <odom_publish_frequency>30</odom_publish_frequency>
+        <max_linear_acceleration>3</max_linear_acceleration>
+        <min_linear_acceleration>-3</min_linear_acceleration>
+        <max_angular_acceleration>4</max_angular_acceleration>
+        <topic>/cmd_vel</topic>
+        <odom_topic>/odom</odom_topic>
+        <frame_id>odom</frame_id>
+        <child_frame_id>base_link</child_frame_id>
+        <tf_topic>/tf</tf_topic>
+      </plugin>
+      <plugin filename="gz-sim-joint-state-publisher-system" name="gz::sim::systems::JointStatePublisher">
+        <topic>/joint_states</topic>
+      </plugin>
+    </model>
+
+    <!-- 6 OBSTACLES: 3 move N-S, 3 move E-W, on fixed Y/X lanes - never collide -->
+    <!-- N-S movers: fixed X, move along Y -->
+    <model name="obs_ns1"><pose>-5 8 0.5 0 0 0</pose><static>false</static>
+      <link name="link">
+        <inertial><mass>500.0</mass><inertia><ixx>10</ixx><iyy>10</iyy><izz>10</izz></inertia></inertial>
+        <collision name="c"><geometry><box><size>0.6 0.6 1.0</size></box></geometry>
+        </collision>
+        <visual name="v"><geometry><box><size>0.6 0.6 1.0</size></box></geometry>
+          <material><ambient>0.2 0.8 0.2 1</ambient><diffuse>0.2 0.8 0.2 1</diffuse></material></visual>
+      </link>
+      <plugin filename="gz-sim-trajectory-follower-system" name="gz::sim::systems::TrajectoryFollower">
+        <link_name>link</link_name><loop>true</loop>
+        <waypoints>
+          <waypoint><point>-5 8 0.5</point><velocity>1.5</velocity></waypoint>
+          <waypoint><point>-5 -8 0.5</point><velocity>1.5</velocity></waypoint>
+        </waypoints>
+      </plugin>
+    </model>
+
+    <model name="obs_ns2"><pose>0 -8 0.5 0 0 0</pose><static>false</static>
+      <link name="link">
+        <inertial><mass>500.0</mass><inertia><ixx>10</ixx><iyy>10</iyy><izz>10</izz></inertia></inertial>
+        <collision name="c"><geometry><box><size>0.6 0.6 1.0</size></box></geometry>
+        </collision>
+        <visual name="v"><geometry><box><size>0.6 0.6 1.0</size></box></geometry>
+          <material><ambient>0.8 0.2 0.8 1</ambient><diffuse>0.8 0.2 0.8 1</diffuse></material></visual>
+      </link>
+      <plugin filename="gz-sim-trajectory-follower-system" name="gz::sim::systems::TrajectoryFollower">
+        <link_name>link</link_name><loop>true</loop>
+        <waypoints>
+          <waypoint><point>0 -8 0.5</point><velocity>1.2</velocity></waypoint>
+          <waypoint><point>0 8 0.5</point><velocity>1.2</velocity></waypoint>
+        </waypoints>
+      </plugin>
+    </model>
+
+    <model name="obs_ns3"><pose>6 8 0.5 0 0 0</pose><static>false</static>
+      <link name="link">
+        <inertial><mass>500.0</mass><inertia><ixx>10</ixx><iyy>10</iyy><izz>10</izz></inertia></inertial>
+        <collision name="c"><geometry><box><size>0.6 0.6 1.0</size></box></geometry>
+        </collision>
+        <visual name="v"><geometry><box><size>0.6 0.6 1.0</size></box></geometry>
+          <material><ambient>0.2 0.8 0.8 1</ambient><diffuse>0.2 0.8 0.8 1</diffuse></material></visual>
+      </link>
+      <plugin filename="gz-sim-trajectory-follower-system" name="gz::sim::systems::TrajectoryFollower">
+        <link_name>link</link_name><loop>true</loop>
+        <waypoints>
+          <waypoint><point>6 8 0.5</point><velocity>1.8</velocity></waypoint>
+          <waypoint><point>6 -8 0.5</point><velocity>1.8</velocity></waypoint>
+        </waypoints>
+      </plugin>
+    </model>
+
+    <!-- E-W movers: fixed Y, move along X -->
+    <model name="obs_ew1"><pose>8 -4 0.5 0 0 0</pose><static>false</static>
+      <link name="link">
+        <inertial><mass>500.0</mass><inertia><ixx>10</ixx><iyy>10</iyy><izz>10</izz></inertia></inertial>
+        <collision name="c"><geometry><box><size>0.6 0.6 1.0</size></box></geometry>
+        </collision>
+        <visual name="v"><geometry><box><size>0.6 0.6 1.0</size></box></geometry>
+          <material><ambient>0.9 0.9 0.1 1</ambient><diffuse>0.9 0.9 0.1 1</diffuse></material></visual>
+      </link>
+      <plugin filename="gz-sim-trajectory-follower-system" name="gz::sim::systems::TrajectoryFollower">
+        <link_name>link</link_name><loop>true</loop>
+        <waypoints>
+          <waypoint><point>8 -4 0.5</point><velocity>1.3</velocity></waypoint>
+          <waypoint><point>-8 -4 0.5</point><velocity>1.3</velocity></waypoint>
+        </waypoints>
+      </plugin>
+    </model>
+
+    <model name="obs_ew2"><pose>-8 2 0.5 0 0 0</pose><static>false</static>
+      <link name="link">
+        <inertial><mass>500.0</mass><inertia><ixx>10</ixx><iyy>10</iyy><izz>10</izz></inertia></inertial>
+        <collision name="c"><geometry><box><size>0.6 0.6 1.0</size></box></geometry>
+        </collision>
+        <visual name="v"><geometry><box><size>0.6 0.6 1.0</size></box></geometry>
+          <material><ambient>0.1 0.3 0.9 1</ambient><diffuse>0.1 0.3 0.9 1</diffuse></material></visual>
+      </link>
+      <plugin filename="gz-sim-trajectory-follower-system" name="gz::sim::systems::TrajectoryFollower">
+        <link_name>link</link_name><loop>true</loop>
+        <waypoints>
+          <waypoint><point>-8 2 0.5</point><velocity>1.0</velocity></waypoint>
+          <waypoint><point>8 2 0.5</point><velocity>1.0</velocity></waypoint>
+        </waypoints>
+      </plugin>
+    </model>
+
+    <model name="obs_ew3"><pose>8 -2 0.5 0 0 0</pose><static>false</static>
+      <link name="link">
+        <inertial><mass>500.0</mass><inertia><ixx>10</ixx><iyy>10</iyy><izz>10</izz></inertia></inertial>
+        <collision name="c"><geometry><box><size>0.6 0.6 1.0</size></box></geometry>
+        </collision>
+        <visual name="v"><geometry><box><size>0.6 0.6 1.0</size></box></geometry>
+          <material><ambient>0.9 0.4 0.1 1</ambient><diffuse>0.9 0.4 0.1 1</diffuse></material></visual>
+      </link>
+      <plugin filename="gz-sim-trajectory-follower-system" name="gz::sim::systems::TrajectoryFollower">
+        <link_name>link</link_name><loop>true</loop>
+        <waypoints>
+          <waypoint><point>8 -2 0.5</point><velocity>1.6</velocity></waypoint>
+          <waypoint><point>-8 -2 0.5</point><velocity>1.6</velocity></waypoint>
+        </waypoints>
+      </plugin>
+    </model>
+
+  </world>
+</sdf>

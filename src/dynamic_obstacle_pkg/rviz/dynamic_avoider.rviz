@@ -1,0 +1,60 @@
+Panels:
+  - Class: rviz_common/Displays
+    Name: Displays
+  - Class: rviz_common/Views
+    Name: Views
+Visualization Manager:
+  Class: ""
+  Displays:
+    - Class: rviz_default_plugins/Map
+      Name: Map
+      Topic:
+        Value: /map
+      Alpha: 0.7
+      Enabled: true
+    - Class: rviz_default_plugins/LaserScan
+      Name: LaserScan
+      Topic:
+        Value: /scan
+        Reliability Policy: Best Effort
+      Enabled: true
+      Size (m): 0.05
+      Color: 255; 0; 0
+    - Class: rviz_default_plugins/RobotModel
+      Name: RobotModel
+      Description Topic:
+        Value: /robot_description
+      Enabled: true
+    - Class: rviz_default_plugins/Path
+      Name: GlobalPath
+      Topic:
+        Value: /plan
+      Enabled: true
+      Color: 0; 255; 0
+    - Class: rviz_default_plugins/Path
+      Name: LocalPath
+      Topic:
+        Value: /local_plan
+      Enabled: true
+      Color: 0; 0; 255
+    - Class: rviz_default_plugins/Odometry
+      Name: Odometry
+      Topic:
+        Value: /odometry/filtered
+      Enabled: true
+  Fixed Frame: odom
+  Global Options:
+    Background Color: 48; 48; 48
+    Fixed Frame: odom
+  Tools:
+    - Class: rviz_default_plugins/Interact
+    - Class: rviz_default_plugins/MoveCamera
+    - Class: rviz_default_plugins/Select
+    - Class: nav2_rviz_plugins/GoalTool
+  Views:
+    Current:
+      Class: rviz_default_plugins/Orbit
+      Distance: 30
+      Pitch: 1.0
+      Target Frame: base_link
+      Yaw: 0
