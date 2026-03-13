@@ -1,8 +1,8 @@
 <?xml version="1.0" ?>
 <sdf version="1.8">
   <world name="dynamic_obstacle_world">
-    <physics name="4ms" type="ignored">
-      <max_step_size>0.004</max_step_size>
+    <physics name="1ms" type="dart">
+      <max_step_size>0.002</max_step_size>
       <real_time_factor>1.0</real_time_factor>
     </physics>
     <plugin filename="gz-sim-physics-system"           name="gz::sim::systems::Physics"/>
@@ -143,103 +143,114 @@
     <!-- N-S movers: fixed X, move along Y -->
     <model name="obs_ns1"><pose>-5 8 0.5 0 0 0</pose><static>false</static>
       <link name="link">
-        <inertial><mass>500.0</mass><inertia><ixx>10</ixx><iyy>10</iyy><izz>10</izz></inertia></inertial>
-        <collision name="c"><geometry><box><size>0.6 0.6 1.0</size></box></geometry>
-        </collision>
+        <inertial><mass>10.0</mass><inertia><ixx>1</ixx><iyy>1</iyy><izz>1</izz></inertia></inertial>
+        <collision name="c"><geometry><box><size>0.6 0.6 1.0</size></box></geometry></collision>
         <visual name="v"><geometry><box><size>0.6 0.6 1.0</size></box></geometry>
           <material><ambient>0.2 0.8 0.2 1</ambient><diffuse>0.2 0.8 0.2 1</diffuse></material></visual>
       </link>
       <plugin filename="gz-sim-trajectory-follower-system" name="gz::sim::systems::TrajectoryFollower">
-        <link_name>link</link_name><loop>true</loop>
+        <link_name>link</link_name>
+        <loop>true</loop>
+        <force>100</force>
+        <torque>100</torque>
         <waypoints>
-          <waypoint><point>-5 8 0.5</point><velocity>1.5</velocity></waypoint>
-          <waypoint><point>-5 -8 0.5</point><velocity>1.5</velocity></waypoint>
+          <waypoint>-5 8</waypoint>
+          <waypoint>-5 -8</waypoint>
         </waypoints>
       </plugin>
     </model>
 
     <model name="obs_ns2"><pose>0 -8 0.5 0 0 0</pose><static>false</static>
       <link name="link">
-        <inertial><mass>500.0</mass><inertia><ixx>10</ixx><iyy>10</iyy><izz>10</izz></inertia></inertial>
-        <collision name="c"><geometry><box><size>0.6 0.6 1.0</size></box></geometry>
-        </collision>
+        <inertial><mass>10.0</mass><inertia><ixx>1</ixx><iyy>1</iyy><izz>1</izz></inertia></inertial>
+        <collision name="c"><geometry><box><size>0.6 0.6 1.0</size></box></geometry></collision>
         <visual name="v"><geometry><box><size>0.6 0.6 1.0</size></box></geometry>
           <material><ambient>0.8 0.2 0.8 1</ambient><diffuse>0.8 0.2 0.8 1</diffuse></material></visual>
       </link>
       <plugin filename="gz-sim-trajectory-follower-system" name="gz::sim::systems::TrajectoryFollower">
-        <link_name>link</link_name><loop>true</loop>
+        <link_name>link</link_name>
+        <loop>true</loop>
+        <force>100</force>
+        <torque>100</torque>
         <waypoints>
-          <waypoint><point>0 -8 0.5</point><velocity>1.2</velocity></waypoint>
-          <waypoint><point>0 8 0.5</point><velocity>1.2</velocity></waypoint>
+          <waypoint>0 -8</waypoint>
+          <waypoint>0 8</waypoint>
         </waypoints>
       </plugin>
     </model>
 
     <model name="obs_ns3"><pose>6 8 0.5 0 0 0</pose><static>false</static>
       <link name="link">
-        <inertial><mass>500.0</mass><inertia><ixx>10</ixx><iyy>10</iyy><izz>10</izz></inertia></inertial>
-        <collision name="c"><geometry><box><size>0.6 0.6 1.0</size></box></geometry>
-        </collision>
+        <inertial><mass>10.0</mass><inertia><ixx>1</ixx><iyy>1</iyy><izz>1</izz></inertia></inertial>
+        <collision name="c"><geometry><box><size>0.6 0.6 1.0</size></box></geometry></collision>
         <visual name="v"><geometry><box><size>0.6 0.6 1.0</size></box></geometry>
           <material><ambient>0.2 0.8 0.8 1</ambient><diffuse>0.2 0.8 0.8 1</diffuse></material></visual>
       </link>
       <plugin filename="gz-sim-trajectory-follower-system" name="gz::sim::systems::TrajectoryFollower">
-        <link_name>link</link_name><loop>true</loop>
+        <link_name>link</link_name>
+        <loop>true</loop>
+        <force>100</force>
+        <torque>100</torque>
         <waypoints>
-          <waypoint><point>6 8 0.5</point><velocity>1.8</velocity></waypoint>
-          <waypoint><point>6 -8 0.5</point><velocity>1.8</velocity></waypoint>
+          <waypoint>6 8</waypoint>
+          <waypoint>6 -8</waypoint>
         </waypoints>
       </plugin>
     </model>
 
-    <!-- E-W movers: fixed Y, move along X -->
     <model name="obs_ew1"><pose>8 -4 0.5 0 0 0</pose><static>false</static>
       <link name="link">
-        <inertial><mass>500.0</mass><inertia><ixx>10</ixx><iyy>10</iyy><izz>10</izz></inertia></inertial>
-        <collision name="c"><geometry><box><size>0.6 0.6 1.0</size></box></geometry>
-        </collision>
+        <inertial><mass>10.0</mass><inertia><ixx>1</ixx><iyy>1</iyy><izz>1</izz></inertia></inertial>
+        <collision name="c"><geometry><box><size>0.6 0.6 1.0</size></box></geometry></collision>
         <visual name="v"><geometry><box><size>0.6 0.6 1.0</size></box></geometry>
           <material><ambient>0.9 0.9 0.1 1</ambient><diffuse>0.9 0.9 0.1 1</diffuse></material></visual>
       </link>
       <plugin filename="gz-sim-trajectory-follower-system" name="gz::sim::systems::TrajectoryFollower">
-        <link_name>link</link_name><loop>true</loop>
+        <link_name>link</link_name>
+        <loop>true</loop>
+        <force>100</force>
+        <torque>100</torque>
         <waypoints>
-          <waypoint><point>8 -4 0.5</point><velocity>1.3</velocity></waypoint>
-          <waypoint><point>-8 -4 0.5</point><velocity>1.3</velocity></waypoint>
+          <waypoint>8 -4</waypoint>
+          <waypoint>-8 -4</waypoint>
         </waypoints>
       </plugin>
     </model>
 
     <model name="obs_ew2"><pose>-8 2 0.5 0 0 0</pose><static>false</static>
       <link name="link">
-        <inertial><mass>500.0</mass><inertia><ixx>10</ixx><iyy>10</iyy><izz>10</izz></inertia></inertial>
-        <collision name="c"><geometry><box><size>0.6 0.6 1.0</size></box></geometry>
-        </collision>
+        <inertial><mass>10.0</mass><inertia><ixx>1</ixx><iyy>1</iyy><izz>1</izz></inertia></inertial>
+        <collision name="c"><geometry><box><size>0.6 0.6 1.0</size></box></geometry></collision>
         <visual name="v"><geometry><box><size>0.6 0.6 1.0</size></box></geometry>
           <material><ambient>0.1 0.3 0.9 1</ambient><diffuse>0.1 0.3 0.9 1</diffuse></material></visual>
       </link>
       <plugin filename="gz-sim-trajectory-follower-system" name="gz::sim::systems::TrajectoryFollower">
-        <link_name>link</link_name><loop>true</loop>
+        <link_name>link</link_name>
+        <loop>true</loop>
+        <force>100</force>
+        <torque>100</torque>
         <waypoints>
-          <waypoint><point>-8 2 0.5</point><velocity>1.0</velocity></waypoint>
-          <waypoint><point>8 2 0.5</point><velocity>1.0</velocity></waypoint>
+          <waypoint>-8 2</waypoint>
+          <waypoint>8 2</waypoint>
         </waypoints>
       </plugin>
     </model>
 
     <model name="obs_ew3"><pose>8 -2 0.5 0 0 0</pose><static>false</static>
       <link name="link">
-        <inertial><mass>500.0</mass><inertia><ixx>10</ixx><iyy>10</iyy><izz>10</izz></inertia></inertial>
-        <collision name="c"><geometry><box><size>0.6 0.6 1.0</size></box></geometry>
-        </collision>
+        <inertial><mass>10.0</mass><inertia><ixx>1</ixx><iyy>1</iyy><izz>1</izz></inertia></inertial>
+        <collision name="c"><geometry><box><size>0.6 0.6 1.0</size></box></geometry></collision>
         <visual name="v"><geometry><box><size>0.6 0.6 1.0</size></box></geometry>
           <material><ambient>0.9 0.4 0.1 1</ambient><diffuse>0.9 0.4 0.1 1</diffuse></material></visual>
       </link>
       <plugin filename="gz-sim-trajectory-follower-system" name="gz::sim::systems::TrajectoryFollower">
-        <link_name>link</link_name><loop>true</loop>
+        <link_name>link</link_name>
+        <loop>true</loop>
+        <force>100</force>
+        <torque>100</torque>
         <waypoints>
-          <waypoint><point>8 -2 0.5</point><velocity>1.6</velocity></waypoint>
-          <waypoint><point>-8 -2 0.5</point><velocity>1.6</velocity></waypoint>
+          <waypoint>8 -2</waypoint>
+          <waypoint>-8 -2</waypoint>
         </waypoints>
       </plugin>
     </model>
